@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useCartStore } from "@/lib/stores/cart-store";
 import { useWishlistStore } from "@/lib/stores/wishlist-store";
+import { useAuthStore } from "@/lib/stores/auth-store";
 import { useHydration } from "@/lib/hooks/use-hydration";
 
 const navLinks = [
@@ -22,6 +23,7 @@ export default function Header() {
   const hydrated = useHydration();
   const totalItems = useCartStore((s) => s.totalItems());
   const wishlistCount = useWishlistStore((s) => s.count());
+  const { user, logout } = useAuthStore();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -76,11 +78,20 @@ export default function Header() {
               )}
             </Button>
           </Link>
-          <Link href="/profile">
-            <Button variant="ghost" size="icon-sm" className="transition-all duration-200 hover:scale-105">
-              <User />
-            </Button>
-          </Link>
+          {hydrated && user ? (
+            <Link href="/profile">
+              <Button variant="ghost" size="sm" className="transition-all duration-200 hover:scale-105 gap-2">
+                <div className="h-6 w-6 rounded-full bg-muted flex items-center justify-center text-xs font-medium">{user.name[0]}</div>
+                <span className="hidden lg:inline">{user.name}</span>
+              </Button>
+            </Link>
+          ) : (
+            <Link href="/login">
+              <Button variant="outline" size="sm" className="transition-all duration-200 hover:scale-105">
+                <User className="mr-1 h-4 w-4" />Đăng nhập
+              </Button>
+            </Link>
+          )}
         </div>
 
         {/* Mobile toggle */}

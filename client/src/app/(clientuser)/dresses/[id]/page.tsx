@@ -15,6 +15,7 @@ import ImageGallery from "@/components/dresses/image-gallery";
 import WishlistButton from "@/components/dresses/wishlist-button";
 import DateRangePicker from "@/components/dresses/date-range-picker";
 import ReviewSection from "@/components/dresses/review-section";
+import AuthGuard from "@/components/auth/auth-guard";
 
 function formatPrice(n: number) {
   return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(n);
@@ -213,30 +214,38 @@ export default function DressDetailPage() {
 
           {/* CTA */}
           <div className="mt-6 space-y-3 animate-fade-in-up delay-400">
-            {addedToCart ? (
-              <div className="rounded-lg border border-green-300 bg-green-50 p-3 text-center text-sm font-medium text-green-700 animate-scale-in">
-                Đã thêm vào giỏ hàng!
-              </div>
-            ) : (
-              <Button
-                size="lg"
-                className="w-full transition-all duration-200 hover:scale-[1.02] hover:shadow-lg"
-                disabled={!isAvailable || !selectedSize || !startDate || !endDate}
-                onClick={handleAddToCart}
-              >
-                <ShoppingCart className="mr-2 h-4 w-4" />
-                {!selectedSize ? "Chọn kích cỡ" : !startDate ? "Chọn ngày thuê" : "Thêm vào giỏ"}
-              </Button>
-            )}
+            {/* Thêm vào giỏ - cần đăng nhập */}
+            <AuthGuard message="Đăng nhập để thêm vào giỏ">
+              {addedToCart ? (
+                <div className="rounded-lg border border-green-300 bg-green-50 p-3 text-center text-sm font-medium text-green-700 animate-scale-in">
+                  Đã thêm vào giỏ hàng!
+                </div>
+              ) : (
+                <Button
+                  size="lg"
+                  className="w-full transition-all duration-200 hover:scale-[1.02] hover:shadow-lg"
+                  disabled={!isAvailable || !selectedSize || !startDate || !endDate}
+                  onClick={handleAddToCart}
+                >
+                  <ShoppingCart className="mr-2 h-4 w-4" />
+                  {!selectedSize ? "Chọn kích cỡ" : !startDate ? "Chọn ngày thuê" : "Thêm vào giỏ"}
+                </Button>
+              )}
+            </AuthGuard>
 
-            <div className="flex gap-3">
-              <Button size="lg" variant="outline" className="flex-1 transition-all duration-200 hover:scale-105" disabled={!isAvailable}>
-                Thuê ngay
-              </Button>
-              <Button size="lg" variant="outline" className="transition-all duration-200 hover:scale-105">
-                Liên hệ tư vấn
-              </Button>
-            </div>
+            {/* Thuê ngay - cần đăng nhập */}
+            <AuthGuard message="Đăng nhập để thuê ngay">
+              <div className="flex gap-3">
+                <Link href={`/dresses/${dress.id}/checkout`} className="flex-1">
+                  <Button size="lg" variant="outline" className="w-full transition-all duration-200 hover:scale-105" disabled={!isAvailable}>
+                    Thuê ngay
+                  </Button>
+                </Link>
+                <Button size="lg" variant="outline" className="transition-all duration-200 hover:scale-105">
+                  Liên hệ tư vấn
+                </Button>
+              </div>
+            </AuthGuard>
 
             <Link href={`/dresses/${dress.id}/try-on`}>
               <Button size="lg" variant="secondary" className="w-full transition-all duration-200 hover:scale-[1.02] hover:shadow-md">
