@@ -2,13 +2,15 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { User, Mail, Phone, Lock } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { User, Mail, Phone, Lock, Eye, EyeOff, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { toast } from "sonner";
 
 export default function RegisterPage() {
+  const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -24,54 +26,73 @@ export default function RegisterPage() {
       toast.warning("Mật khẩu yếu", { description: "Mật khẩu phải có ít nhất 6 ký tự." });
       return;
     }
-    toast.success("Đăng ký thành công", { description: "Vui lòng kiểm tra email để xác nhận tài khoản." });
+    toast.success("Đăng ký thành công!", { description: "Chào mừng bạn đến với DressRental." });
+    router.push("/login");
   };
 
   return (
-    <div className="mx-auto flex max-w-sm flex-col items-center justify-center px-4 py-20 page-enter">
-      <Card className="w-full animate-scale-in">
-        <CardHeader className="items-center text-center">
-          <CardTitle className="text-xl animate-fade-in-down">Đăng ký</CardTitle>
-          <CardDescription className="animate-fade-in-down delay-100">Tạo tài khoản để bắt đầu thuê váy.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form className="space-y-4" onSubmit={handleRegister}>
-            <div className="space-y-1.5 animate-fade-in-up delay-200">
-              <label htmlFor="name" className="text-sm font-medium">Họ và tên</label>
+    <div className="min-h-screen flex">
+      {/* Left - Form */}
+      <div className="flex flex-col justify-center flex-1 px-6 py-12 sm:px-12 lg:px-20 xl:px-24">
+        <div className="mx-auto w-full max-w-sm">
+          <Link href="/" className="flex items-center gap-2 font-bold text-xl mb-10">
+            <ShoppingBag className="h-6 w-6" />DressRental
+          </Link>
+
+          <h1 className="text-3xl font-bold tracking-tight">Tạo tài khoản</h1>
+          <p className="mt-2 text-muted-foreground">Bắt đầu hành trình thuê váy của bạn.</p>
+
+          <form className="mt-8 space-y-4" onSubmit={handleRegister}>
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium">Họ và tên</label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input id="name" placeholder="Nguyễn Văn A" value={name} onChange={(e) => setName(e.target.value)} className="pl-9 transition-all duration-200 focus:scale-[1.02]" />
+                <Input placeholder="Nguyễn Văn A" value={name} onChange={(e) => setName(e.target.value)} className="pl-9 h-11" />
               </div>
             </div>
-            <div className="space-y-1.5 animate-fade-in-up delay-200">
-              <label htmlFor="email" className="text-sm font-medium">Email</label>
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium">Email</label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input id="email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-9 transition-all duration-200 focus:scale-[1.02]" />
+                <Input type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-9 h-11" />
               </div>
             </div>
-            <div className="space-y-1.5 animate-fade-in-up delay-300">
-              <label htmlFor="phone" className="text-sm font-medium">Số điện thoại</label>
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium">Số điện thoại</label>
               <div className="relative">
                 <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input id="phone" type="tel" placeholder="0901 234 567" value={phone} onChange={(e) => setPhone(e.target.value)} className="pl-9 transition-all duration-200 focus:scale-[1.02]" />
+                <Input type="tel" placeholder="0901 234 567" value={phone} onChange={(e) => setPhone(e.target.value)} className="pl-9 h-11" />
               </div>
             </div>
-            <div className="space-y-1.5 animate-fade-in-up delay-300">
-              <label htmlFor="password" className="text-sm font-medium">Mật khẩu</label>
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium">Mật khẩu</label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input id="password" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} className="pl-9 transition-all duration-200 focus:scale-[1.02]" />
+                <Input type={showPassword ? "text" : "password"} placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} className="pl-9 pr-9 h-11" />
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
               </div>
               <p className="text-xs text-muted-foreground">Tối thiểu 6 ký tự</p>
             </div>
-            <Button type="submit" className="w-full transition-all duration-200 hover:scale-[1.02] animate-fade-in-up delay-400">Đăng ký</Button>
+            <Button type="submit" className="w-full h-11 text-base mt-2">Đăng ký</Button>
           </form>
-          <p className="mt-4 text-center text-sm text-muted-foreground animate-fade-in delay-500">
-            Đã có tài khoản? <Link href="/login" className="font-medium text-foreground hover:underline">Đăng nhập</Link>
+
+          <p className="mt-8 text-center text-sm text-muted-foreground">
+            Đã có tài khoản?{" "}
+            <Link href="/login" className="font-semibold text-foreground hover:underline">Đăng nhập</Link>
           </p>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
+
+      {/* Right - Brand */}
+      <div className="hidden lg:flex flex-1 bg-muted items-center justify-center">
+        <div className="text-center px-12">
+          <div className="text-6xl mb-6">✨</div>
+          <h2 className="text-2xl font-bold mb-3">Tham gia DressRental</h2>
+          <p className="text-muted-foreground">Đăng ký để nhận ưu đãi độc quyền và trải nghiệm thuê váy tiện lợi.</p>
+        </div>
+      </div>
     </div>
   );
 }
