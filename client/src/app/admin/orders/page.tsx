@@ -11,6 +11,7 @@ import { orders } from "@/lib/mock-data";
 import type { OrderStatus } from "@/lib/mock-data";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { formatDate } from "@/lib/date-utils";
 
 function formatPrice(n: number) {
   return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(n);
@@ -146,7 +147,7 @@ export default function AdminOrdersPage() {
                         <p className="text-sm line-clamp-1">{o.dressName}</p>
                         <p className="text-xs text-muted-foreground">Size {o.size} · {o.color}</p>
                       </TableCell>
-                      <TableCell className="text-sm">{o.startDate} → {o.endDate}</TableCell>
+                      <TableCell className="text-sm">{formatDate(o.startDate)} → {formatDate(o.endDate)}</TableCell>
                       <TableCell className="text-sm font-medium">{formatPrice(o.totalPrice)}</TableCell>
                       <TableCell className="text-xs">{o.paymentMethod}</TableCell>
                       <TableCell>

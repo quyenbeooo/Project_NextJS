@@ -9,6 +9,7 @@ import { Star, Search, Trash2, Eye } from "lucide-react";
 import { dresses } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { formatDateTime } from "@/lib/date-utils";
 
 export default function AdminReviewsPage() {
   const [search, setSearch] = useState("");
@@ -97,7 +98,7 @@ export default function AdminReviewsPage() {
                           <Star key={s} className={cn("h-3 w-3", s <= r.rating ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground/30")} />
                         ))}
                       </div>
-                      <span className="text-xs text-muted-foreground">{r.date}</span>
+                      <span className="text-xs text-muted-foreground">{formatDateTime(r.date)}</span>
                     </div>
                   </div>
                   <p className="text-sm text-muted-foreground mt-2">{r.comment}</p>

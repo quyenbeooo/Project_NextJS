@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Shirt, ShoppingCart, Users, DollarSign, TrendingUp, Clock } from "lucide-react";
 import { dresses, orders, users } from "@/lib/mock-data";
+import { formatDate, formatDateTime } from "@/lib/date-utils";
 
 function formatPrice(n: number) {
   return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(n);
@@ -65,7 +66,7 @@ export default function AdminDashboardPage() {
               <div key={o.id} className="flex items-center justify-between rounded-lg border border-border p-3">
                 <div className="space-y-0.5">
                   <p className="text-sm font-medium">{o.id} — {o.customerName}</p>
-                  <p className="text-xs text-muted-foreground">{o.dressName} · Size {o.size} · {o.startDate} → {o.endDate}</p>
+                  <p className="text-xs text-muted-foreground">{o.dressName} · Size {o.size} · {formatDate(o.startDate)} → {formatDate(o.endDate)}</p>
                 </div>
                 <div className="flex items-center gap-3">
                   <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${statusColors[o.status]}`}>

@@ -10,6 +10,7 @@ import { orders } from "@/lib/mock-data";
 import type { OrderStatus } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { formatDate, formatDateTime } from "@/lib/date-utils";
 
 function formatPrice(n: number) {
   return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(n);
@@ -89,11 +90,11 @@ export default function OrdersPage() {
                     </div>
                     <p className="text-sm text-muted-foreground">Mã đơn: {order.id}</p>
                     <p className="text-sm text-muted-foreground">
-                      Size {order.size} · {order.color} · {order.startDate} → {order.endDate}
+                      Size {order.size} · {order.color} · {formatDate(order.startDate)} → {formatDate(order.endDate)}
                     </p>
                     <p className="text-sm text-muted-foreground flex items-center gap-1 mt-0.5">
                       <Clock className="h-3 w-3" />
-                      Tạo: {order.createdAt} · {order.paymentMethod}
+                      Tạo: {formatDateTime(order.createdAt)} · {order.paymentMethod}
                     </p>
                     <p className="text-sm font-medium mt-1">{formatPrice(order.totalPrice)}</p>
                   </div>

@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { rentalCalendar } from "@/lib/mock-data";
 import { toast } from "sonner";
+import { formatDate } from "@/lib/date-utils";
 
 interface DateRangePickerProps {
   dressId: string;
@@ -75,14 +76,14 @@ export default function DateRangePicker({ dressId, onDateChange }: DateRangePick
       });
       toast.error("Váy đã được thuê trong ngày này", {
         description: booking
-          ? `Ngày ${dateStr} nằm trong khoảng ${booking.start} → ${booking.end} đã có khách thuê. Vui lòng chọn ngày khác.`
-          : `Ngày ${dateStr} đã có người thuê. Vui lòng chọn ngày khác.`,
+          ? `Ngày ${formatDate(dateStr)} nằm trong khoảng ${formatDate(booking.start)} → ${formatDate(booking.end)} đã có khách thuê. Vui lòng chọn ngày khác.`
+          : `Ngày ${formatDate(dateStr)} đã có người thuê. Vui lòng chọn ngày khác.`,
       });
       return;
     }
     if (isBuffer(dateStr)) {
       toast.warning("Váy đang được giặt/sấy", {
-        description: `Ngày ${dateStr} là ngày buffer giặt váy sau khi khách trước trả. Váy sẽ sẵn sàng thuê từ ngày tiếp theo.`,
+        description: `Ngày ${formatDate(dateStr)} là ngày buffer giặt váy sau khi khách trước trả. Váy sẽ sẵn sàng thuê từ ngày tiếp theo.`,
       });
       return;
     }
@@ -114,11 +115,11 @@ export default function DateRangePicker({ dressId, onDateChange }: DateRangePick
       }
 
       if (hasConflict) {
-        toast.error("Khoảng ngày trùng lịch thuê", {
-          description: conflictBooking
-            ? `Khoảng ngày bạn chọn (${startDate} → ${dateStr}) trùng với lịch thuê ${conflictBooking.start} → ${conflictBooking.end}. Vui lòng chọn khoảng ngày khác.`
-            : `Khoảng ngày bạn chọn trùng với lịch thuê khác. Vui lòng chọn lại.`,
-        });
+      toast.error("Khoảng ngày trùng lịch thuê", {
+        description: conflictBooking
+          ? `Khoảng ngày bạn chọn (${formatDate(startDate)} → ${formatDate(dateStr)}) trùng với lịch thuê ${formatDate(conflictBooking.start)} → ${formatDate(conflictBooking.end)}. Vui lòng chọn lại.`
+          : `Khoảng ngày bạn chọn trùng với lịch thuê khác. Vui lòng chọn lại.`,
+      });
         return;
       }
 
@@ -137,7 +138,7 @@ export default function DateRangePicker({ dressId, onDateChange }: DateRangePick
           (1000 * 60 * 60 * 24)
       );
       toast.success("Đã chọn ngày thuê", {
-        description: `${startDate} → ${dateStr} (${Math.abs(days)} ngày) - Váy còn trống trong khoảng này!`,
+        description: `${formatDate(startDate)} → ${formatDate(dateStr)} (${Math.abs(days)} ngày) - Váy còn trống trong khoảng này!`,
       });
     }
   };
@@ -258,7 +259,7 @@ export default function DateRangePicker({ dressId, onDateChange }: DateRangePick
             {bookedDates.map((b, i) => (
               <div key={i} className="flex items-center gap-2 text-xs text-red-600">
                 <div className="h-1.5 w-1.5 rounded-full bg-red-400" />
-                <span>{b.start} → {b.end}</span>
+                <span>{formatDate(b.start)} → {formatDate(b.end)}</span>
                 <span className="text-red-400">({Math.ceil((new Date(b.end).getTime() - new Date(b.start).getTime()) / (1000 * 60 * 60 * 24)) + 1} ngày)</span>
               </div>
             ))}
@@ -270,11 +271,11 @@ export default function DateRangePicker({ dressId, onDateChange }: DateRangePick
         {startDate && (
           <div className="rounded-lg border border-border p-3 text-sm">
             <p className="text-muted-foreground">Ngày nhận:</p>
-            <p className="font-medium">{startDate}</p>
+            <p className="font-medium">{formatDate(startDate)}</p>
             {endDate && (
               <>
                 <p className="text-muted-foreground mt-1">Ngày trả:</p>
-                <p className="font-medium">{endDate}</p>
+                <p className="font-medium">{formatDate(endDate)}</p>
                 <p className="text-muted-foreground mt-1">
                   Tổng:{" "}
                   <span className="font-medium text-foreground">

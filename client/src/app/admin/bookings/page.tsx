@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { CalendarDays, ChevronLeft, ChevronRight, Clock } from "lucide-react";
 import { orders, dresses, rentalCalendar } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
+import { formatDate } from "@/lib/date-utils";
 
 function getDaysInMonth(year: number, month: number) {
   return new Date(year, month + 1, 0).getDate();
@@ -176,7 +177,7 @@ export default function AdminBookingsPage() {
                         </div>
                         <p className="text-xs text-muted-foreground">{o.customerName} · {o.phone}</p>
                         <p className="text-xs text-muted-foreground">{o.dressName} (Size {o.size})</p>
-                        <p className="text-xs text-muted-foreground">{o.startDate} → {o.endDate}</p>
+                        <p className="text-xs text-muted-foreground">{formatDate(o.startDate)} → {formatDate(o.endDate)}</p>
                       </div>
                     ))}
                   </div>

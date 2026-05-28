@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import type { DressReview } from "@/lib/mock-data";
+import { formatDateTime } from "@/lib/date-utils";
 
 interface ReviewSectionProps {
   reviews: DressReview[];
@@ -100,7 +101,7 @@ export default function ReviewSection({ reviews, rating, reviewCount }: ReviewSe
                     </div>
                   </div>
                 </div>
-                <span className="text-xs text-muted-foreground">{review.date}</span>
+                    <span className="text-xs text-muted-foreground">{formatDateTime(review.date)}</span>
               </div>
               <p className="text-sm text-muted-foreground pl-10">{review.comment}</p>
             </div>

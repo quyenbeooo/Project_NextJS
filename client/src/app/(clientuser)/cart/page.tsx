@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useCartStore } from "@/lib/stores/cart-store";
+import { formatDate, daysBetween } from "@/lib/date-utils";
 
 function formatPrice(n: number) {
   return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(n);
@@ -55,7 +56,7 @@ export default function CartPage() {
                     </div>
                     <div className="flex items-center gap-1 mt-2 text-xs text-muted-foreground">
                       <CalendarDays className="h-3 w-3" />
-                      {item.startDate} → {item.endDate} ({days} ngày)
+                      {formatDate(item.startDate)} → {formatDate(item.endDate)} ({daysBetween(item.startDate, item.endDate)} ngày)
                     </div>
                     <div className="flex items-center justify-between mt-3">
                       <div className="flex items-center gap-2">

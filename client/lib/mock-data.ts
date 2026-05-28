@@ -157,8 +157,8 @@ export const dresses: Dress[] = [
       { id: "a3", name: "Vòng tay lụa", price: 20000 },
     ],
     reviews: [
-      { id: "r1", userName: "Trần Thị B", rating: 5, comment: "Váy rất đẹp, chất lượng tốt!", date: "2026-05-20" },
-      { id: "r2", userName: "Lê Văn C", rating: 4, comment: "Váy mặc vừa ý, giao hàng nhanh.", date: "2026-05-18" },
+      { id: "r1", userName: "Trần Thị B", rating: 5, comment: "Váy rất đẹp, chất lượng tốt!", date: "2026-05-20T14:30:00" },
+      { id: "r2", userName: "Lê Văn C", rating: 4, comment: "Váy mặc vừa ý, giao hàng nhanh.", date: "2026-05-18T09:15:00" },
     ],
   },
   {
@@ -194,7 +194,7 @@ export const dresses: Dress[] = [
       { id: "a5", name: "Khuyên tai ngọc", price: 40000 },
     ],
     reviews: [
-      { id: "r3", userName: "Phạm Minh D", rating: 5, comment: "Sang trọng hơn mong đợi!", date: "2026-05-15" },
+      { id: "r3", userName: "Phạm Minh D", rating: 5, comment: "Sang trọng hơn mong đợi!", date: "2026-05-15T16:00:00" },
     ],
   },
   {
@@ -228,8 +228,8 @@ export const dresses: Dress[] = [
       { id: "a7", name: "Túi xách mini", price: 45000 },
     ],
     reviews: [
-      { id: "r4", userName: "Nguyễn Thị E", rating: 5, comment: "Dễ thương quá!", date: "2026-05-22" },
-      { id: "r5", userName: "Hoàng Văn F", rating: 4, comment: "Bạn gái thích lắm.", date: "2026-05-20" },
+      { id: "r4", userName: "Nguyễn Thị E", rating: 5, comment: "Dễ thương quá!", date: "2026-05-22T11:00:00" },
+      { id: "r5", userName: "Hoàng Văn F", rating: 4, comment: "Bạn gái thích lắm.", date: "2026-05-20T08:00:00" },
     ],
   },
   {
@@ -263,7 +263,7 @@ export const dresses: Dress[] = [
       { id: "a8", name: "Thắt lưng da", price: 35000 },
     ],
     reviews: [
-      { id: "r6", userName: "Mai Văn G", rating: 5, comment: "Váy mặc thoải mái, form đẹp.", date: "2026-05-25" },
+      { id: "r6", userName: "Mai Văn G", rating: 5, comment: "Váy mặc thoải mái, form đẹp.", date: "2026-05-25T15:00:00" },
     ],
   },
   {
@@ -421,7 +421,7 @@ export const orders: Order[] = [
       { status: "returned", date: "2026-05-22 16:00", note: "Khách trả váy" },
       { status: "completed", date: "2026-05-22 17:00", note: "Hoàn tất" },
     ],
-    review: { id: "r10", userName: "Phạm Minh D", rating: 5, comment: "Váy rất đẹp, chất lượng tốt!", date: "2026-05-23" },
+    review: { id: "r10", userName: "Phạm Minh D", rating: 5, comment: "Váy rất đẹp, chất lượng tốt!", date: "2026-05-23T10:00:00" },
   },
   {
     id: "ORD-004",

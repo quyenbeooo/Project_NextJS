@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { orders } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
+import { formatDate, formatDateTime } from "@/lib/date-utils";
 
 function formatPrice(n: number) {
   return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(n);
@@ -60,7 +61,7 @@ export default function OrderDetailPage() {
       <div className="flex items-center justify-between mb-8 animate-fade-in-up">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Đơn {order.id}</h1>
-          <p className="text-muted-foreground text-sm">Tạo ngày {order.createdAt}</p>
+          <p className="text-muted-foreground text-sm">Tạo ngày {formatDateTime(order.createdAt)}</p>
         </div>
         <Badge variant={order.status === "cancelled" ? "destructive" : "default"} className="text-sm">
           {statusLabels[order.status]}
@@ -92,7 +93,7 @@ export default function OrderDetailPage() {
                             <p className={cn("text-sm font-medium", isLast ? "text-foreground" : "text-muted-foreground")}>
                               {statusLabels[step.status] || step.status}
                             </p>
-                            <span className="text-xs text-muted-foreground">{step.date}</span>
+                            <span className="text-xs text-muted-foreground">{formatDateTime(step.date)}</span>
                           </div>
                           <p className="text-sm text-muted-foreground mt-0.5">{step.note}</p>
                         </div>
@@ -160,7 +161,7 @@ export default function OrderDetailPage() {
                   ))}
                 </div>
                 <p className="text-sm">{order.review!.comment}</p>
-                <p className="text-xs text-muted-foreground">{order.review!.date}</p>
+                <p className="text-xs text-muted-foreground">{formatDateTime(order.review!.date)}</p>
               </CardContent>
             </Card>
           )}
@@ -213,8 +214,8 @@ export default function OrderDetailPage() {
                 </div>
               </div>
               <div className="border-t border-border pt-4 space-y-2 text-sm">
-                <div className="flex justify-between"><span className="text-muted-foreground">Ngày thuê</span><span>{order.startDate}</span></div>
-                <div className="flex justify-between"><span className="text-muted-foreground">Ngày trả</span><span>{order.endDate}</span></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">Ngày thuê</span><span>{formatDate(order.startDate)}</span></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">Ngày trả</span><span>{formatDate(order.endDate)}</span></div>
                 <div className="flex justify-between"><span className="text-muted-foreground">Thanh toán</span><span>{order.paymentMethod}</span></div>
                 <div className="flex justify-between"><span className="text-muted-foreground">Đặt cọc</span><span>{formatPrice(order.deposit)}</span></div>
                 <div className="flex justify-between font-bold border-t border-border pt-2">

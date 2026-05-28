@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Search, UserCheck, UserX, Mail, Phone } from "lucide-react";
 import { users, orders } from "@/lib/mock-data";
 import { toast } from "sonner";
+import { formatDate } from "@/lib/date-utils";
 
 export default function AdminUsersPage() {
   const [search, setSearch] = useState("");
@@ -92,7 +93,7 @@ export default function AdminUsersPage() {
                       </Badge>
                     </TableCell>
                     <TableCell className="text-sm">{userOrders.length} đơn</TableCell>
-                    <TableCell className="text-sm">{u.createdAt}</TableCell>
+                    <TableCell className="text-sm">{formatDate(u.createdAt)}</TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-1">
                         <Button variant="ghost" size="icon-xs" onClick={() => toast.info(`Gửi email đến ${u.email}`)}>
