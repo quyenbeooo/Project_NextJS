@@ -66,7 +66,7 @@ export default function CartPage() {
                     </div>
 
                     {/* Accessories */}
-                    {item.accessories.length > 0 && (
+                    {item.accessories && item.accessories.length > 0 && (
                       <p className="text-xs text-muted-foreground mt-1">
                         Phụ kiện: {item.accessories.length} món
                       </p>
