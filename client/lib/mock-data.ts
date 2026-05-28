@@ -95,3 +95,80 @@ export const dresses: Dress[] = [
     available: true,
   },
 ];
+
+// --- Admin mock data ---
+
+export interface Order {
+  id: string;
+  customerName: string;
+  dressName: string;
+  startDate: string;
+  endDate: string;
+  totalPrice: number;
+  status: "pending" | "confirmed" | "delivered" | "returned" | "cancelled";
+}
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  role: "user" | "admin";
+  createdAt: string;
+}
+
+export const orders: Order[] = [
+  {
+    id: "ORD-001",
+    customerName: "Trần Thị B",
+    dressName: "Váy Cầu Vồng Pastel",
+    startDate: "2026-06-01",
+    endDate: "2026-06-03",
+    totalPrice: 700000,
+    status: "confirmed",
+  },
+  {
+    id: "ORD-002",
+    customerName: "Lê Văn C",
+    dressName: "Váy Đêm Hoàng Hôn",
+    startDate: "2026-06-05",
+    endDate: "2026-06-06",
+    totalPrice: 500000,
+    status: "pending",
+  },
+  {
+    id: "ORD-003",
+    customerName: "Phạm Minh D",
+    dressName: "Váy Lụa Sang Trọng",
+    startDate: "2026-05-20",
+    endDate: "2026-05-22",
+    totalPrice: 1200000,
+    status: "returned",
+  },
+  {
+    id: "ORD-004",
+    customerName: "Nguyễn Thị E",
+    dressName: "Váy Công Sở Thanh Lịch",
+    startDate: "2026-06-10",
+    endDate: "2026-06-12",
+    totalPrice: 400000,
+    status: "pending",
+  },
+  {
+    id: "ORD-005",
+    customerName: "Hoàng Văn F",
+    dressName: "Váy Ngọt Ngào Mùa Xuân",
+    startDate: "2026-05-15",
+    endDate: "2026-05-16",
+    totalPrice: 280000,
+    status: "delivered",
+  },
+];
+
+export const users: User[] = [
+  { id: "U01", name: "Admin", email: "admin@dressrental.vn", phone: "0900 000 000", role: "admin", createdAt: "2026-01-01" },
+  { id: "U02", name: "Trần Thị B", email: "tranb@gmail.com", phone: "0901 234 567", role: "user", createdAt: "2026-03-10" },
+  { id: "U03", name: "Lê Văn C", email: "levanc@gmail.com", phone: "0902 345 678", role: "user", createdAt: "2026-03-15" },
+  { id: "U04", name: "Phạm Minh D", email: "phamd@gmail.com", phone: "0903 456 789", role: "user", createdAt: "2026-04-01" },
+  { id: "U05", name: "Nguyễn Thị E", email: "nguyene@gmail.com", phone: "0904 567 890", role: "user", createdAt: "2026-04-20" },
+];
