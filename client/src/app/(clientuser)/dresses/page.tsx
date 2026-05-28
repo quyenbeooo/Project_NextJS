@@ -19,28 +19,29 @@ export default function DressesPage() {
   });
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8">
-      <h1 className="text-3xl font-bold tracking-tight">Thuê váy</h1>
-      <p className="mt-2 text-muted-foreground">
+    <div className="mx-auto max-w-6xl px-4 py-8 page-enter">
+      <h1 className="text-3xl font-bold tracking-tight animate-fade-in-up">Thuê váy</h1>
+      <p className="mt-2 text-muted-foreground animate-fade-in-up delay-100">
         Tìm kiếm và thuê bộ váy yêu thích của bạn.
       </p>
 
       {/* Filters */}
-      <div className="mt-8 space-y-5">
+      <div className="mt-8 space-y-5 animate-fade-in-up delay-200">
         {/* Category */}
         <div>
           <p className="text-sm font-medium mb-2">Danh mục</p>
           <div className="flex flex-wrap gap-2">
-            {categories.map((c) => (
+            {categories.map((c, i) => (
               <button
                 key={c}
                 onClick={() => setCategory(c)}
                 className={cn(
-                  "rounded-full px-3.5 py-1 text-sm font-medium border transition-colors",
+                  "rounded-full px-3.5 py-1 text-sm font-medium border transition-all duration-200",
                   category === c
-                    ? "border-foreground bg-foreground text-background"
-                    : "border-border text-muted-foreground hover:border-foreground/40"
+                    ? "border-foreground bg-foreground text-background scale-105"
+                    : "border-border text-muted-foreground hover:border-foreground/40 hover:scale-105"
                 )}
+                style={{ animationDelay: `${i * 30}ms` }}
               >
                 {c}
               </button>
@@ -52,16 +53,17 @@ export default function DressesPage() {
         <div>
           <p className="text-sm font-medium mb-2">Kích cỡ</p>
           <div className="flex flex-wrap gap-2">
-            {sizes.map((s) => (
+            {sizes.map((s, i) => (
               <button
                 key={s}
                 onClick={() => setSize(size === s ? null : s)}
                 className={cn(
-                  "rounded-md border px-3 py-1 text-sm font-medium transition-colors",
+                  "rounded-md border px-3 py-1 text-sm font-medium transition-all duration-200",
                   size === s
-                    ? "border-foreground bg-foreground text-background"
-                    : "border-border text-muted-foreground hover:border-foreground/40"
+                    ? "border-foreground bg-foreground text-background scale-105"
+                    : "border-border text-muted-foreground hover:border-foreground/40 hover:scale-105"
                 )}
+                style={{ animationDelay: `${i * 30}ms` }}
               >
                 {s}
               </button>
@@ -83,7 +85,7 @@ export default function DressesPage() {
 
       {/* Results */}
       <div className="mt-8">
-        <p className="mb-4 text-sm text-muted-foreground">
+        <p className="mb-4 text-sm text-muted-foreground animate-fade-in">
           {filtered.length} váy tìm thấy
         </p>
         <DressGrid dresses={filtered} />

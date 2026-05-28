@@ -20,7 +20,7 @@ export default function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 font-bold tracking-tight">
+        <Link href="/" className="flex items-center gap-2 font-bold tracking-tight transition-opacity hover:opacity-70">
           <ShoppingBag className="h-5 w-5" />
           <span className="text-lg">DressRental</span>
         </Link>
@@ -34,7 +34,7 @@ export default function Header() {
                 key={l.href}
                 href={l.href}
                 className={cn(
-                  "text-sm font-medium transition-colors hover:text-foreground",
+                  "text-sm font-medium transition-all duration-200 hover:text-foreground link-underline",
                   active ? "text-foreground" : "text-muted-foreground"
                 )}
               >
@@ -46,17 +46,19 @@ export default function Header() {
 
         {/* Desktop Right */}
         <div className="hidden md:flex items-center gap-2">
-          <Button variant="ghost" size="icon-sm">
+          <Button variant="ghost" size="icon-sm" className="transition-all duration-200 hover:scale-105">
             <Search />
           </Button>
           <Link href="/login">
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" className="transition-all duration-200 hover:scale-105">
               <User />
               Đăng nhập
             </Button>
           </Link>
           <Link href="/register">
-            <Button size="sm">Đăng ký</Button>
+            <Button size="sm" className="transition-all duration-200 hover:scale-105">
+              Đăng ký
+            </Button>
           </Link>
         </div>
 
@@ -64,49 +66,55 @@ export default function Header() {
         <Button
           variant="ghost"
           size="icon-sm"
-          className="md:hidden"
+          className="md:hidden transition-transform duration-200"
           onClick={() => setOpen(!open)}
         >
-          {open ? <X /> : <Menu />}
+          <div className={cn("transition-transform duration-300", open && "rotate-90")}>
+            {open ? <X /> : <Menu />}
+          </div>
         </Button>
       </div>
 
       {/* Mobile menu */}
-      {open && (
-        <div className="md:hidden border-t border-border bg-background px-4 pb-4 pt-2">
-          <nav className="flex flex-col gap-1">
-            {navLinks.map((l) => {
-              const active = pathname === l.href;
-              return (
-                <Link
-                  key={l.href}
-                  href={l.href}
-                  onClick={() => setOpen(false)}
-                  className={cn(
-                    "rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                    active
-                      ? "bg-muted text-foreground"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                  )}
-                >
-                  {l.label}
-                </Link>
-              );
-            })}
-            <div className="my-2 border-t border-border" />
-            <Link href="/login" onClick={() => setOpen(false)}>
-              <Button variant="outline" className="w-full" size="sm">
-                Đăng nhập
-              </Button>
-            </Link>
-            <Link href="/register" onClick={() => setOpen(false)}>
-              <Button className="w-full mt-1" size="sm">
-                Đăng ký
-              </Button>
-            </Link>
-          </nav>
-        </div>
-      )}
+      <div
+        className={cn(
+          "md:hidden overflow-hidden border-t border-border bg-background transition-all duration-300 ease-in-out",
+          open ? "max-h-64 opacity-100" : "max-h-0 opacity-0 border-t-0"
+        )}
+      >
+        <nav className="flex flex-col gap-1 px-4 pb-4 pt-2">
+          {navLinks.map((l, i) => {
+            const active = pathname === l.href;
+            return (
+              <Link
+                key={l.href}
+                href={l.href}
+                onClick={() => setOpen(false)}
+                className={cn(
+                  "rounded-md px-3 py-2 text-sm font-medium transition-all duration-200",
+                  active
+                    ? "bg-muted text-foreground"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                )}
+                style={{ animationDelay: `${i * 50}ms` }}
+              >
+                {l.label}
+              </Link>
+            );
+          })}
+          <div className="my-2 border-t border-border" />
+          <Link href="/login" onClick={() => setOpen(false)}>
+            <Button variant="outline" className="w-full transition-all duration-200 hover:scale-[1.02]" size="sm">
+              Đăng nhập
+            </Button>
+          </Link>
+          <Link href="/register" onClick={() => setOpen(false)}>
+            <Button className="w-full mt-1 transition-all duration-200 hover:scale-[1.02]" size="sm">
+              Đăng ký
+            </Button>
+          </Link>
+        </nav>
+      </div>
     </header>
   );
 }

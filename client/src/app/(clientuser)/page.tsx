@@ -15,29 +15,29 @@ const steps = [
 
 export default function HomePage() {
   return (
-    <div>
+    <div className="page-enter">
       {/* Hero */}
-      <section className="border-b border-border bg-background">
+      <section className="border-b border-border bg-background overflow-hidden">
         <div className="mx-auto max-w-6xl px-4 py-20 sm:py-28">
           <div className="max-w-2xl">
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
+            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl animate-fade-in-up">
               Tỏa sáng trong mọi{" "}
               <span className="underline decoration-2 underline-offset-4">
                 dịp đặc biệt
               </span>
             </h1>
-            <p className="mt-5 text-lg text-muted-foreground leading-relaxed">
+            <p className="mt-5 text-lg text-muted-foreground leading-relaxed animate-fade-in-up delay-100">
               Cho thuê váy cao cấp với giá phải chăng. Từ váy cưới, dạ hội
               đến dự tiệc — bộ sưu tập đa dạng giúp bạn xinh đẹp nhất.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-8 flex flex-wrap gap-3 animate-fade-in-up delay-200">
               <Link href="/dresses">
-                <Button size="lg">
+                <Button size="lg" className="transition-all duration-200 hover:scale-105 hover:shadow-lg">
                   Khám phá ngay <ArrowRight />
                 </Button>
               </Link>
               <Link href="/register">
-                <Button variant="outline" size="lg">
+                <Button variant="outline" size="lg" className="transition-all duration-200 hover:scale-105">
                   Đăng ký thành viên
                 </Button>
               </Link>
@@ -49,10 +49,15 @@ export default function HomePage() {
       {/* How it works */}
       <section className="border-b border-border bg-muted/30">
         <div className="mx-auto max-w-6xl px-4 py-16">
-          <h2 className="text-center text-2xl font-bold">Cách thức thuê váy</h2>
+          <h2 className="text-center text-2xl font-bold animate-fade-in-up">
+            Cách thức thuê váy
+          </h2>
           <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-3">
-            {steps.map((s) => (
-              <Card key={s.num}>
+            {steps.map((s, i) => (
+              <Card
+                key={s.num}
+                className={`animate-fade-in-up hover-lift delay-${(i + 1) * 100}`}
+              >
                 <CardContent className="items-center text-center gap-3 pt-2">
                   <span className="text-3xl font-bold text-muted-foreground/40">
                     {s.num}
@@ -68,11 +73,11 @@ export default function HomePage() {
 
       {/* Featured */}
       <section className="mx-auto max-w-6xl px-4 py-16">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between animate-fade-in-up">
           <h2 className="text-2xl font-bold">Váy nổi bật</h2>
           <Link
             href="/dresses"
-            className="text-sm font-medium text-muted-foreground hover:text-foreground hover:underline"
+            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-all duration-200 link-underline"
           >
             Xem tất cả &rarr;
           </Link>

@@ -5,10 +5,10 @@ export default function Footer() {
   return (
     <footer className="border-t border-border bg-muted/30">
       <div className="mx-auto max-w-6xl px-4 py-10">
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 animate-fade-in-up">
           {/* Brand */}
           <div>
-            <Link href="/" className="flex items-center gap-2 font-bold">
+            <Link href="/" className="flex items-center gap-2 font-bold transition-opacity hover:opacity-70">
               <ShoppingBag className="h-4 w-4" />
               DressRental
             </Link>
@@ -21,9 +21,21 @@ export default function Footer() {
           <div>
             <h3 className="text-sm font-semibold">Dịch vụ</h3>
             <ul className="mt-2 space-y-1.5 text-sm text-muted-foreground">
-              <li><Link href="/dresses" className="hover:text-foreground">Thuê váy</Link></li>
-              <li><Link href="/dresses?category=Váy cưới" className="hover:text-foreground">Váy cưới</Link></li>
-              <li><Link href="/dresses?category=Váy dạ hội" className="hover:text-foreground">Váy dạ hội</Link></li>
+              <li>
+                <Link href="/dresses" className="hover:text-foreground transition-colors duration-200">
+                  Thuê váy
+                </Link>
+              </li>
+              <li>
+                <Link href="/dresses?category=Váy cưới" className="hover:text-foreground transition-colors duration-200">
+                  Váy cưới
+                </Link>
+              </li>
+              <li>
+                <Link href="/dresses?category=Váy dạ hội" className="hover:text-foreground transition-colors duration-200">
+                  Váy dạ hội
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -31,9 +43,21 @@ export default function Footer() {
           <div>
             <h3 className="text-sm font-semibold">Hỗ trợ</h3>
             <ul className="mt-2 space-y-1.5 text-sm text-muted-foreground">
-              <li><Link href="#" className="hover:text-foreground">Hướng dẫn thuê</Link></li>
-              <li><Link href="#" className="hover:text-foreground">Chính sách đổi trả</Link></li>
-              <li><Link href="#" className="hover:text-foreground">Liên hệ</Link></li>
+              <li>
+                <Link href="#" className="hover:text-foreground transition-colors duration-200">
+                  Hướng dẫn thuê
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="hover:text-foreground transition-colors duration-200">
+                  Chính sách đổi trả
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="hover:text-foreground transition-colors duration-200">
+                  Liên hệ
+                </Link>
+              </li>
             </ul>
           </div>
 
