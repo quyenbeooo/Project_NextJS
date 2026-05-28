@@ -1,18 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import { Minus, Plus, Trash2, ShoppingBag, ArrowRight } from "lucide-react";
+import { Minus, Plus, Trash2, ShoppingBag, ArrowRight, CalendarDays } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { useCartStore } from "@/lib/stores/cart-store";
 
 function formatPrice(n: number) {
   return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(n);
 }
 
+function calcDays(start: string, end: string) {
+  return Math.max(1, Math.ceil((new Date(end).getTime() - new Date(start).getTime()) / (1000 * 60 * 60 * 24)));
+}
+
 export default function CartPage() {
-  const { items, removeItem, updateQuantity, subtotal } = useCartStore();
-  const deposit = Math.round(subtotal() * 0.5);
+  const { items, removeItem, updateItem, subtotal } = useCartStore();
+  const deposit = Math.round(subtotal() * 0.3);
 
   if (items.length === 0) {
     return (
@@ -23,9 +28,7 @@ export default function CartPage() {
         <h1 className="text-2xl font-bold mb-2">Giỏ hàng trống</h1>
         <p className="text-muted-foreground mb-6">Hãy thêm váy yêu thích vào giỏ hàng.</p>
         <Link href="/dresses">
-          <Button size="lg">
-            Mua sắm ngay <ArrowRight />
-          </Button>
+          <Button size="lg">Mua sắm ngay <ArrowRight /></Button>
         </Link>
       </div>
     );
@@ -39,40 +42,58 @@ export default function CartPage() {
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
         {/* Items */}
         <div className="lg:col-span-2 space-y-4">
-          {items.map((item, i) => (
-            <Card key={`${item.dressId}-${item.size}`} className={`animate-fade-in-up delay-${Math.min((i + 1) * 100, 400)}`}>
-              <CardContent className="flex gap-4 pt-4">
-                <div className="h-24 w-20 flex-shrink-0 rounded-lg bg-muted flex items-center justify-center text-xs text-muted-foreground">
-                  Ảnh
-                </div>
-                <div className="flex-1 min-w-0">
-                  <Link href={`/dresses/${item.dressId}`} className="font-semibold hover:underline line-clamp-1">
-                    {item.name}
-                  </Link>
-                  <p className="text-sm text-muted-foreground mt-0.5">Size: {item.size}</p>
-                  <p className="text-sm font-medium mt-1">{formatPrice(item.price)}/ngày</p>
-
-                  <div className="flex items-center justify-between mt-3">
-                    <div className="flex items-center gap-2">
-                      <Button variant="outline" size="icon-xs" onClick={() => updateQuantity(item.dressId, item.quantity - 1)}>
-                        <Minus className="h-3 w-3" />
-                      </Button>
-                      <span className="w-8 text-center text-sm font-medium">{item.quantity}</span>
-                      <Button variant="outline" size="icon-xs" onClick={() => updateQuantity(item.dressId, item.quantity + 1)}>
-                        <Plus className="h-3 w-3" />
-                      </Button>
+          {items.map((item, i) => {
+            const days = calcDays(item.startDate, item.endDate);
+            return (
+              <Card key={`${item.dressId}-${item.size}-${item.startDate}`} className={`animate-fade-in-up delay-${Math.min((i + 1) * 100, 400)}`}>
+                <CardContent className="flex gap-4 pt-4">
+                  <div className="h-24 w-20 flex-shrink-0 rounded-lg bg-muted flex items-center justify-center text-xs text-muted-foreground">
+                    Ảnh
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <Link href={`/dresses/${item.dressId}`} className="font-semibold hover:underline line-clamp-1">
+                      {item.name}
+                    </Link>
+                    <div className="flex flex-wrap gap-2 mt-1">
+                      <Badge variant="secondary" className="text-xs">Size {item.size}</Badge>
+                      <Badge variant="secondary" className="text-xs">{item.color}</Badge>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <span className="font-bold">{formatPrice(item.price * item.quantity)}</span>
-                      <Button variant="ghost" size="icon-xs" onClick={() => removeItem(item.dressId)}>
-                        <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
-                      </Button>
+
+                    {/* Rental dates */}
+                    <div className="flex items-center gap-1 mt-2 text-xs text-muted-foreground">
+                      <CalendarDays className="h-3 w-3" />
+                      {item.startDate} → {item.endDate} ({days} ngày)
+                    </div>
+
+                    {/* Accessories */}
+                    {item.accessories.length > 0 && (
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Phụ kiện: {item.accessories.length} món
+                      </p>
+                    )}
+
+                    <div className="flex items-center justify-between mt-3">
+                      <div className="flex items-center gap-2">
+                        <Button variant="outline" size="icon-xs" onClick={() => updateItem(item.dressId, { quantity: item.quantity - 1 })}>
+                          <Minus className="h-3 w-3" />
+                        </Button>
+                        <span className="w-8 text-center text-sm font-medium">{item.quantity}</span>
+                        <Button variant="outline" size="icon-xs" onClick={() => updateItem(item.dressId, { quantity: item.quantity + 1 })}>
+                          <Plus className="h-3 w-3" />
+                        </Button>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className="font-bold">{formatPrice(item.price * days * item.quantity)}</span>
+                        <Button variant="ghost" size="icon-xs" onClick={() => removeItem(item.dressId)}>
+                          <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
+                        </Button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
 
         {/* Summary */}
@@ -82,17 +103,30 @@ export default function CartPage() {
               <CardTitle className="text-base">Tóm tắt đơn hàng</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Tạm tính</span>
-                <span>{formatPrice(subtotal())}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Đặt cọc (ước tính)</span>
-                <span>{formatPrice(deposit)}</span>
-              </div>
-              <div className="border-t border-border pt-3 flex justify-between font-bold">
-                <span>Tổng cộng</span>
-                <span>{formatPrice(subtotal())}</span>
+              {items.map((item) => {
+                const days = calcDays(item.startDate, item.endDate);
+                return (
+                  <div key={`${item.dressId}-${item.size}`} className="flex justify-between text-sm">
+                    <span className="text-muted-foreground truncate mr-2">
+                      {item.name} ×{item.quantity}
+                    </span>
+                    <span>{formatPrice(item.price * days * item.quantity)}</span>
+                  </div>
+                );
+              })}
+              <div className="border-t border-border pt-3 space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Tạm tính</span>
+                  <span>{formatPrice(subtotal())}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Đặt cọc (ước tính)</span>
+                  <span>{formatPrice(deposit)}</span>
+                </div>
+                <div className="flex justify-between font-bold">
+                  <span>Tổng cộng</span>
+                  <span>{formatPrice(subtotal())}</span>
+                </div>
               </div>
               <Link href="/checkout" className="block mt-4">
                 <Button className="w-full transition-all duration-200 hover:scale-[1.02]" size="lg">
@@ -100,9 +134,7 @@ export default function CartPage() {
                 </Button>
               </Link>
               <Link href="/dresses" className="block">
-                <Button variant="outline" className="w-full" size="lg">
-                  Tiếp tục mua sắm
-                </Button>
+                <Button variant="outline" className="w-full" size="lg">Tiếp tục mua sắm</Button>
               </Link>
             </CardContent>
           </Card>

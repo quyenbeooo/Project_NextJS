@@ -9,14 +9,29 @@ interface AddToCartButtonProps {
   name: string;
   price: number;
   size: string;
+  color: string;
+  startDate?: string;
+  endDate?: string;
   available: boolean;
 }
 
-export default function AddToCartButton({ dressId, name, price, size, available }: AddToCartButtonProps) {
+export default function AddToCartButton({
+  dressId, name, price, size, color, startDate, endDate, available,
+}: AddToCartButtonProps) {
   const addItem = useCartStore((s) => s.addItem);
 
   const handleAdd = () => {
-    addItem({ dressId, name, price, size });
+    addItem({
+      dressId,
+      name,
+      price,
+      size,
+      color,
+      quantity: 1,
+      startDate: startDate || new Date().toISOString().split("T")[0],
+      endDate: endDate || new Date().toISOString().split("T")[0],
+      accessories: [],
+    });
   };
 
   return (

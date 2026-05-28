@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
-import { Menu, X, Search, User, ShoppingBag, ShoppingCart } from "lucide-react";
+import { Menu, X, Search, User, ShoppingBag, ShoppingCart, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useCartStore } from "@/lib/stores/cart-store";
+import { useWishlistStore } from "@/lib/stores/wishlist-store";
 
 const navLinks = [
   { href: "/", label: "Trang chủ" },
@@ -18,6 +19,7 @@ export default function Header() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const totalItems = useCartStore((s) => s.totalItems());
+  const wishlistCount = useWishlistStore((s) => s.count());
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -62,15 +64,19 @@ export default function Header() {
               )}
             </Button>
           </Link>
-          <Link href="/login">
-            <Button variant="outline" size="sm" className="transition-all duration-200 hover:scale-105">
-              <User />
-              Đăng nhập
+          <Link href="/wishlist">
+            <Button variant="ghost" size="icon-sm" className="relative transition-all duration-200 hover:scale-105">
+              <Heart />
+              {wishlistCount > 0 && (
+                <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-background animate-scale-in">
+                  {wishlistCount}
+                </span>
+              )}
             </Button>
           </Link>
-          <Link href="/register">
-            <Button size="sm" className="transition-all duration-200 hover:scale-105">
-              Đăng ký
+          <Link href="/profile">
+            <Button variant="ghost" size="icon-sm" className="transition-all duration-200 hover:scale-105">
+              <User />
             </Button>
           </Link>
         </div>
@@ -122,14 +128,16 @@ export default function Header() {
               Giỏ hàng {totalItems > 0 && `(${totalItems})`}
             </Button>
           </Link>
-          <Link href="/login" onClick={() => setOpen(false)}>
+          <Link href="/wishlist" onClick={() => setOpen(false)}>
             <Button variant="outline" className="w-full transition-all duration-200 hover:scale-[1.02] mt-1" size="sm">
-              Đăng nhập
+              <Heart className="mr-2 h-4 w-4" />
+              Yêu thích {wishlistCount > 0 && `(${wishlistCount})`}
             </Button>
           </Link>
-          <Link href="/register" onClick={() => setOpen(false)}>
-            <Button className="w-full mt-1 transition-all duration-200 hover:scale-[1.02]" size="sm">
-              Đăng ký
+          <Link href="/profile" onClick={() => setOpen(false)}>
+            <Button variant="outline" className="w-full transition-all duration-200 hover:scale-[1.02] mt-1" size="sm">
+              <User className="mr-2 h-4 w-4" />
+              Tài khoản
             </Button>
           </Link>
         </nav>

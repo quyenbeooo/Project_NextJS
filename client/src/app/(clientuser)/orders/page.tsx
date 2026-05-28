@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Package, Eye, Star } from "lucide-react";
+import { Package, Eye, Star, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -25,19 +25,19 @@ const statusTabs: { key: OrderStatus | "all"; label: string }[] = [
   { key: "cancelled", label: "Đã hủy" },
 ];
 
-const statusConfig: Record<OrderStatus, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
-  pending: { label: "Chờ xử lý", variant: "secondary" },
-  confirmed: { label: "Đã xác nhận", variant: "default" },
-  shipping: { label: "Đang giao", variant: "outline" },
-  renting: { label: "Đang thuê", variant: "default" },
-  returned: { label: "Đã trả", variant: "secondary" },
-  completed: { label: "Hoàn tất", variant: "outline" },
-  cancelled: { label: "Đã hủy", variant: "destructive" },
+const statusConfig: Record<OrderStatus, { label: string; variant: "default" | "secondary" | "destructive" | "outline"; color: string }> = {
+  pending: { label: "Chờ xử lý", variant: "secondary", color: "text-yellow-600" },
+  confirmed: { label: "Đã xác nhận", variant: "default", color: "text-blue-600" },
+  shipping: { label: "Đang giao", variant: "outline", color: "text-purple-600" },
+  renting: { label: "Đang thuê", variant: "default", color: "text-green-600" },
+  returned: { label: "Đã trả", variant: "secondary", color: "text-orange-600" },
+  completed: { label: "Hoàn tất", variant: "outline", color: "text-green-700" },
+  cancelled: { label: "Đã hủy", variant: "destructive", color: "text-red-600" },
+  expired: { label: "Hết hạn", variant: "destructive", color: "text-gray-500" },
 };
 
 export default function OrdersPage() {
   const [tab, setTab] = useState<OrderStatus | "all">("all");
-
   const filtered = tab === "all" ? orders : orders.filter((o) => o.status === tab);
 
   return (
@@ -59,11 +59,13 @@ export default function OrdersPage() {
             )}
           >
             {t.label}
+            {t.key !== "all" && (
+              <span className="ml-1 text-xs">({orders.filter((o) => o.status === t.key).length})</span>
+            )}
           </button>
         ))}
       </div>
 
-      {/* Orders list */}
       {filtered.length === 0 ? (
         <div className="py-20 text-center animate-fade-in">
           <Package className="h-12 w-12 mx-auto text-muted-foreground/30 mb-4" />
@@ -73,28 +75,27 @@ export default function OrdersPage() {
         <div className="space-y-4">
           {filtered.map((order, i) => {
             const st = statusConfig[order.status];
+            const canCancel = order.status === "pending" || order.status === "confirmed";
+            const canReview = order.status === "completed" && !order.review;
             return (
               <Card key={order.id} className={`animate-fade-in-up delay-${Math.min((i + 1) * 100, 500)}`}>
                 <CardContent className="flex flex-col sm:flex-row sm:items-center gap-4 pt-4">
-                  {/* Image */}
-                  <div className="h-20 w-16 flex-shrink-0 rounded-lg bg-muted flex items-center justify-center text-xs text-muted-foreground">
-                    Ảnh
-                  </div>
-
-                  {/* Info */}
+                  <div className="h-20 w-16 flex-shrink-0 rounded-lg bg-muted flex items-center justify-center text-xs text-muted-foreground">Ảnh</div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
                       <p className="font-semibold">{order.dressName}</p>
                       <Badge variant={st.variant}>{st.label}</Badge>
                     </div>
                     <p className="text-sm text-muted-foreground">Mã đơn: {order.id}</p>
                     <p className="text-sm text-muted-foreground">
-                      Size {order.size} · {order.startDate} → {order.endDate}
+                      Size {order.size} · {order.color} · {order.startDate} → {order.endDate}
+                    </p>
+                    <p className="text-sm text-muted-foreground flex items-center gap-1 mt-0.5">
+                      <Clock className="h-3 w-3" />
+                      Tạo: {order.createdAt} · {order.paymentMethod}
                     </p>
                     <p className="text-sm font-medium mt-1">{formatPrice(order.totalPrice)}</p>
                   </div>
-
-                  {/* Actions */}
                   <div className="flex gap-2 sm:flex-col">
                     <Link href={`/orders/${order.id}`}>
                       <Button variant="outline" size="sm">
@@ -102,13 +103,18 @@ export default function OrdersPage() {
                         Chi tiết
                       </Button>
                     </Link>
-                    {order.status === "completed" && !order.review && (
-                      <Link href={`/orders/${order.id}?review=true`}>
+                    {canReview && (
+                      <Link href={`/orders/${order.id}`}>
                         <Button size="sm">
                           <Star className="mr-1 h-3.5 w-3.5" />
                           Đánh giá
                         </Button>
                       </Link>
+                    )}
+                    {canCancel && (
+                      <Button variant="destructive" size="sm">
+                        Hủy đơn
+                      </Button>
                     )}
                   </div>
                 </CardContent>

@@ -2,20 +2,13 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-
-export interface CartItem {
-  dressId: string;
-  name: string;
-  price: number;
-  size: string;
-  quantity: number;
-}
+import type { CartItem } from "@/lib/mock-data";
 
 interface CartState {
   items: CartItem[];
-  addItem: (item: Omit<CartItem, "quantity">) => void;
+  addItem: (item: CartItem) => void;
   removeItem: (dressId: string) => void;
-  updateQuantity: (dressId: string, quantity: number) => void;
+  updateItem: (dressId: string, updates: Partial<CartItem>) => void;
   clearCart: () => void;
   totalItems: () => number;
   subtotal: () => number;
@@ -29,18 +22,21 @@ export const useCartStore = create<CartState>()(
       addItem: (item) =>
         set((state) => {
           const existing = state.items.find(
-            (i) => i.dressId === item.dressId && i.size === item.size
+            (i) =>
+              i.dressId === item.dressId &&
+              i.size === item.size &&
+              i.color === item.color &&
+              i.startDate === item.startDate &&
+              i.endDate === item.endDate
           );
           if (existing) {
             return {
               items: state.items.map((i) =>
-                i.dressId === item.dressId && i.size === item.size
-                  ? { ...i, quantity: i.quantity + 1 }
-                  : i
+                i === existing ? { ...i, quantity: i.quantity + item.quantity } : i
               ),
             };
           }
-          return { items: [...state.items, { ...item, quantity: 1 }] };
+          return { items: [...state.items, item] };
         }),
 
       removeItem: (dressId) =>
@@ -48,14 +44,11 @@ export const useCartStore = create<CartState>()(
           items: state.items.filter((i) => i.dressId !== dressId),
         })),
 
-      updateQuantity: (dressId, quantity) =>
+      updateItem: (dressId, updates) =>
         set((state) => ({
-          items:
-            quantity <= 0
-              ? state.items.filter((i) => i.dressId !== dressId)
-              : state.items.map((i) =>
-                  i.dressId === dressId ? { ...i, quantity } : i
-                ),
+          items: state.items.map((i) =>
+            i.dressId === dressId ? { ...i, ...updates } : i
+          ),
         })),
 
       clearCart: () => set({ items: [] }),
@@ -63,7 +56,16 @@ export const useCartStore = create<CartState>()(
       totalItems: () => get().items.reduce((sum, i) => sum + i.quantity, 0),
 
       subtotal: () =>
-        get().items.reduce((sum, i) => sum + i.price * i.quantity, 0),
+        get().items.reduce((sum, i) => {
+          const days = Math.max(
+            1,
+            Math.ceil(
+              (new Date(i.endDate).getTime() - new Date(i.startDate).getTime()) /
+                (1000 * 60 * 60 * 24)
+            )
+          );
+          return sum + i.price * days * i.quantity;
+        }, 0),
     }),
     { name: "dress-cart" }
   )
