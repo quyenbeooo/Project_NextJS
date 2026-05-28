@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useCartStore } from "@/lib/stores/cart-store";
 import { useWishlistStore } from "@/lib/stores/wishlist-store";
+import { useHydration } from "@/lib/hooks/use-hydration";
 
 const navLinks = [
   { href: "/", label: "Trang chủ" },
@@ -18,6 +19,7 @@ const navLinks = [
 export default function Header() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const hydrated = useHydration();
   const totalItems = useCartStore((s) => s.totalItems());
   const wishlistCount = useWishlistStore((s) => s.count());
 
@@ -57,7 +59,7 @@ export default function Header() {
           <Link href="/cart">
             <Button variant="ghost" size="icon-sm" className="relative transition-all duration-200 hover:scale-105">
               <ShoppingCart />
-              {totalItems > 0 && (
+              {hydrated && totalItems > 0 && (
                 <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-foreground text-[10px] font-bold text-background animate-scale-in">
                   {totalItems}
                 </span>
@@ -67,7 +69,7 @@ export default function Header() {
           <Link href="/wishlist">
             <Button variant="ghost" size="icon-sm" className="relative transition-all duration-200 hover:scale-105">
               <Heart />
-              {wishlistCount > 0 && (
+              {hydrated && wishlistCount > 0 && (
                 <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-background animate-scale-in">
                   {wishlistCount}
                 </span>
@@ -125,13 +127,13 @@ export default function Header() {
           <Link href="/cart" onClick={() => setOpen(false)}>
             <Button variant="outline" className="w-full transition-all duration-200 hover:scale-[1.02]" size="sm">
               <ShoppingCart className="mr-2 h-4 w-4" />
-              Giỏ hàng {totalItems > 0 && `(${totalItems})`}
+              Giỏ hàng {hydrated && totalItems > 0 && `(${totalItems})`}
             </Button>
           </Link>
           <Link href="/wishlist" onClick={() => setOpen(false)}>
             <Button variant="outline" className="w-full transition-all duration-200 hover:scale-[1.02] mt-1" size="sm">
               <Heart className="mr-2 h-4 w-4" />
-              Yêu thích {wishlistCount > 0 && `(${wishlistCount})`}
+              Yêu thích {hydrated && wishlistCount > 0 && `(${wishlistCount})`}
             </Button>
           </Link>
           <Link href="/profile" onClick={() => setOpen(false)}>

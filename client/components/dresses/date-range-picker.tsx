@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,12 +16,8 @@ function getDaysInMonth(year: number, month: number) {
   return new Date(year, month + 1, 0).getDate();
 }
 
-function formatDate(date: Date) {
-  return date.toISOString().split("T")[0];
-}
-
 export default function DateRangePicker({ dressId, onDateChange }: DateRangePickerProps) {
-  const today = new Date();
+  const [today] = useState(() => new Date());
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
   const [startDate, setStartDate] = useState<string | null>(null);
