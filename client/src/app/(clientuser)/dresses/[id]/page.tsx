@@ -3,18 +3,18 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { ArrowLeft, Check, Ruler, ShoppingCart, Minus, Plus, AlertTriangle } from "lucide-react";
+import { ArrowLeft, Ruler, ShoppingCart, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { dresses } from "@/lib/mock-data";
 import { useCartStore } from "@/lib/stores/cart-store";
+import { toast } from "sonner";
 import ImageGallery from "@/components/dresses/image-gallery";
 import WishlistButton from "@/components/dresses/wishlist-button";
 import DateRangePicker from "@/components/dresses/date-range-picker";
 import ReviewSection from "@/components/dresses/review-section";
-import AddToCartButton from "@/components/dresses/add-to-cart-button";
 
 function formatPrice(n: number) {
   return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(n);
@@ -27,7 +27,6 @@ export default function DressDetailPage() {
 
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [selectedColor, setSelectedColor] = useState<string>(dress?.variants[0]?.color || "");
-  const [selectedAccessories, setSelectedAccessories] = useState<string[]>([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [addedToCart, setAddedToCart] = useState(false);
@@ -49,21 +48,17 @@ export default function DressDetailPage() {
   const days = startDate && endDate
     ? Math.max(1, Math.ceil((new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24)))
     : 1;
-  const accessoryTotal = selectedAccessories.reduce((sum, id) => {
-    const acc = dress.accessories.find((a) => a.id === id);
-    return sum + (acc?.price || 0);
-  }, 0);
-  const totalPrice = (dress.price * days) + accessoryTotal;
-  const totalDeposit = dress.deposit;
-
-  const toggleAccessory = (id: string) => {
-    setSelectedAccessories((prev) =>
-      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
-    );
-  };
+  const totalPrice = dress.price * days;
 
   const handleAddToCart = () => {
-    if (!selectedSize || !startDate || !endDate) return;
+    if (!selectedSize) {
+      toast.warning("Chưa chọn kích cỡ", { description: "Vui lòng chọn size trước khi thêm vào giỏ." });
+      return;
+    }
+    if (!startDate || !endDate) {
+      toast.warning("Chưa chọn ngày thuê", { description: "Vui lòng chọn ngày nhận và ngày trả." });
+      return;
+    }
     addItem({
       dressId: dress.id,
       name: dress.name,
@@ -73,9 +68,12 @@ export default function DressDetailPage() {
       quantity: 1,
       startDate,
       endDate,
-      accessories: selectedAccessories,
+      accessories: [],
     });
     setAddedToCart(true);
+    toast.success("Đã thêm vào giỏ hàng", {
+      description: `${dress.name} (Size ${selectedSize}) - ${startDate} → ${endDate}`,
+    });
     setTimeout(() => setAddedToCart(false), 2000);
   };
 
@@ -105,9 +103,7 @@ export default function DressDetailPage() {
           <h1 className="text-3xl font-bold tracking-tight">{dress.name}</h1>
 
           <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
-            <span className="flex items-center gap-1">
-              ★ {dress.rating} ({dress.reviewCount} đánh giá)
-            </span>
+            <span>★ {dress.rating} ({dress.reviewCount} đánh giá)</span>
             <span>·</span>
             <span>{dress.material}</span>
             <span>·</span>
@@ -133,86 +129,58 @@ export default function DressDetailPage() {
             </div>
           )}
 
-          {/* Variant selection - Color */}
-          <div className="mt-6 space-y-4">
-            <div>
-              <p className="text-sm font-medium mb-2">Màu sắc</p>
-              <div className="flex flex-wrap gap-2">
-                {dress.variants.map((v) => (
-                  <button
-                    key={v.color}
-                    onClick={() => v.available && setSelectedColor(v.color)}
-                    disabled={!v.available}
-                    className={cn(
-                      "flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-medium transition-all duration-200",
-                      selectedColor === v.color
-                        ? "border-foreground bg-foreground text-background"
-                        : "border-border text-muted-foreground hover:border-foreground/40",
-                      !v.available && "opacity-40 cursor-not-allowed"
-                    )}
-                  >
-                    <div
-                      className="h-4 w-4 rounded-full border"
-                      style={{ backgroundColor: v.colorCode }}
-                    />
-                    {v.color}
-                    {!v.available && <span className="text-xs">(Hết)</span>}
-                  </button>
-                ))}
-              </div>
+          {/* Color */}
+          <div className="mt-6">
+            <p className="text-sm font-medium mb-2">Màu sắc</p>
+            <div className="flex flex-wrap gap-2">
+              {dress.variants.map((v) => (
+                <button
+                  key={v.color}
+                  onClick={() => {
+                    if (v.available) {
+                      setSelectedColor(v.color);
+                    } else {
+                      toast.error("Màu này đã hết", {
+                        description: `${v.color} hiện đang được thuê. Vui lòng chọn màu khác.`,
+                      });
+                    }
+                  }}
+                  disabled={!v.available}
+                  className={cn(
+                    "flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-medium transition-all duration-200",
+                    selectedColor === v.color
+                      ? "border-foreground bg-foreground text-background"
+                      : "border-border text-muted-foreground hover:border-foreground/40",
+                    !v.available && "opacity-40 cursor-not-allowed"
+                  )}
+                >
+                  <div className="h-4 w-4 rounded-full border" style={{ backgroundColor: v.colorCode }} />
+                  {v.color}
+                  {!v.available && <span className="text-xs">(Hết)</span>}
+                </button>
+              ))}
             </div>
+          </div>
 
-            {/* Size */}
-            <div>
-              <p className="text-sm font-medium mb-2">Kích cỡ</p>
-              <div className="flex flex-wrap gap-2">
-                {dress.size.map((s) => (
-                  <button
-                    key={s}
-                    onClick={() => setSelectedSize(s)}
-                    className={cn(
-                      "rounded-md border px-4 py-1.5 text-sm font-medium transition-all duration-200",
-                      selectedSize === s
-                        ? "border-foreground bg-foreground text-background"
-                        : "border-border text-muted-foreground hover:border-foreground/40"
-                    )}
-                  >
-                    {s}
-                  </button>
-                ))}
-              </div>
+          {/* Size */}
+          <div className="mt-4">
+            <p className="text-sm font-medium mb-2">Kích cỡ</p>
+            <div className="flex flex-wrap gap-2">
+              {dress.size.map((s) => (
+                <button
+                  key={s}
+                  onClick={() => setSelectedSize(s)}
+                  className={cn(
+                    "rounded-md border px-4 py-1.5 text-sm font-medium transition-all duration-200",
+                    selectedSize === s
+                      ? "border-foreground bg-foreground text-background"
+                      : "border-border text-muted-foreground hover:border-foreground/40"
+                  )}
+                >
+                  {s}
+                </button>
+              ))}
             </div>
-
-            {/* Accessories */}
-            {dress.accessories.length > 0 && (
-              <div>
-                <p className="text-sm font-medium mb-2">Phụ kiện đi kèm</p>
-                <div className="space-y-2">
-                  {dress.accessories.map((acc) => (
-                    <label
-                      key={acc.id}
-                      className={cn(
-                        "flex items-center justify-between rounded-lg border p-3 cursor-pointer transition-all duration-200",
-                        selectedAccessories.includes(acc.id)
-                          ? "border-foreground bg-muted/50"
-                          : "border-border hover:border-foreground/40"
-                      )}
-                    >
-                      <div className="flex items-center gap-3">
-                        <input
-                          type="checkbox"
-                          checked={selectedAccessories.includes(acc.id)}
-                          onChange={() => toggleAccessory(acc.id)}
-                          className="rounded border-border"
-                        />
-                        <span className="text-sm">{acc.name}</span>
-                      </div>
-                      <span className="text-sm font-medium">{formatPrice(acc.price)}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Date picker */}
@@ -229,21 +197,15 @@ export default function DressDetailPage() {
               <CardContent className="pt-4 space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Tiền thuê ({days} ngày × {formatPrice(dress.price)})</span>
-                  <span>{formatPrice(dress.price * days)}</span>
+                  <span>{formatPrice(totalPrice)}</span>
                 </div>
-                {accessoryTotal > 0 && (
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Phụ kiện</span>
-                    <span>{formatPrice(accessoryTotal)}</span>
-                  </div>
-                )}
                 <div className="flex justify-between font-bold border-t border-border pt-2">
                   <span>Tổng cộng</span>
                   <span>{formatPrice(totalPrice)}</span>
                 </div>
                 <div className="flex justify-between text-sm text-muted-foreground">
                   <span>Đặt cọc (trả khi trả váy)</span>
-                  <span>{formatPrice(totalDeposit)}</span>
+                  <span>{formatPrice(dress.deposit)}</span>
                 </div>
               </CardContent>
             </Card>
@@ -288,11 +250,7 @@ export default function DressDetailPage() {
 
       {/* Reviews */}
       <div className="mt-12">
-        <ReviewSection
-          reviews={dress.reviews}
-          rating={dress.rating}
-          reviewCount={dress.reviewCount}
-        />
+        <ReviewSection reviews={dress.reviews} rating={dress.rating} reviewCount={dress.reviewCount} />
       </div>
     </div>
   );

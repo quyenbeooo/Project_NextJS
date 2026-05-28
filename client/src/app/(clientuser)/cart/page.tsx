@@ -40,38 +40,23 @@ export default function CartPage() {
       <p className="text-muted-foreground mb-8 animate-fade-in-up delay-100">{items.length} sản phẩm trong giỏ</p>
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-        {/* Items */}
         <div className="lg:col-span-2 space-y-4">
           {items.map((item, i) => {
             const days = calcDays(item.startDate, item.endDate);
             return (
               <Card key={`${item.dressId}-${item.size}-${item.startDate}`} className={`animate-fade-in-up delay-${Math.min((i + 1) * 100, 400)}`}>
                 <CardContent className="flex gap-4 pt-4">
-                  <div className="h-24 w-20 flex-shrink-0 rounded-lg bg-muted flex items-center justify-center text-xs text-muted-foreground">
-                    Ảnh
-                  </div>
+                  <div className="h-24 w-20 flex-shrink-0 rounded-lg bg-muted flex items-center justify-center text-xs text-muted-foreground">Ảnh</div>
                   <div className="flex-1 min-w-0">
-                    <Link href={`/dresses/${item.dressId}`} className="font-semibold hover:underline line-clamp-1">
-                      {item.name}
-                    </Link>
+                    <Link href={`/dresses/${item.dressId}`} className="font-semibold hover:underline line-clamp-1">{item.name}</Link>
                     <div className="flex flex-wrap gap-2 mt-1">
                       <Badge variant="secondary" className="text-xs">Size {item.size}</Badge>
                       <Badge variant="secondary" className="text-xs">{item.color}</Badge>
                     </div>
-
-                    {/* Rental dates */}
                     <div className="flex items-center gap-1 mt-2 text-xs text-muted-foreground">
                       <CalendarDays className="h-3 w-3" />
                       {item.startDate} → {item.endDate} ({days} ngày)
                     </div>
-
-                    {/* Accessories */}
-                    {item.accessories && item.accessories.length > 0 && (
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Phụ kiện: {item.accessories.length} món
-                      </p>
-                    )}
-
                     <div className="flex items-center justify-between mt-3">
                       <div className="flex items-center gap-2">
                         <Button variant="outline" size="icon-xs" onClick={() => updateItem(item.dressId, { quantity: item.quantity - 1 })}>
@@ -96,20 +81,15 @@ export default function CartPage() {
           })}
         </div>
 
-        {/* Summary */}
         <div className="animate-fade-in-up delay-300">
           <Card className="sticky top-20">
-            <CardHeader>
-              <CardTitle className="text-base">Tóm tắt đơn hàng</CardTitle>
-            </CardHeader>
+            <CardHeader><CardTitle className="text-base">Tóm tắt đơn hàng</CardTitle></CardHeader>
             <CardContent className="space-y-3">
               {items.map((item) => {
                 const days = calcDays(item.startDate, item.endDate);
                 return (
                   <div key={`${item.dressId}-${item.size}`} className="flex justify-between text-sm">
-                    <span className="text-muted-foreground truncate mr-2">
-                      {item.name} ×{item.quantity}
-                    </span>
+                    <span className="text-muted-foreground truncate mr-2">{item.name} ×{item.quantity}</span>
                     <span>{formatPrice(item.price * days * item.quantity)}</span>
                   </div>
                 );
@@ -129,9 +109,7 @@ export default function CartPage() {
                 </div>
               </div>
               <Link href="/checkout" className="block mt-4">
-                <Button className="w-full transition-all duration-200 hover:scale-[1.02]" size="lg">
-                  Tiến hành thanh toán
-                </Button>
+                <Button className="w-full transition-all duration-200 hover:scale-[1.02]" size="lg">Tiến hành thanh toán</Button>
               </Link>
               <Link href="/dresses" className="block">
                 <Button variant="outline" className="w-full" size="lg">Tiếp tục mua sắm</Button>

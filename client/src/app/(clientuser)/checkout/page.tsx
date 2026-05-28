@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useCartStore } from "@/lib/stores/cart-store";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 function formatPrice(n: number) {
   return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(n);
@@ -172,7 +173,12 @@ export default function CheckoutPage() {
 
                 <div className="flex gap-3 mt-4">
                   <Button variant="outline" onClick={() => setStep(2)} className="flex-1">Quay lại</Button>
-                  <Link href="/orders" className="flex-1" onClick={() => clearCart()}>
+                  <Link href="/orders" className="flex-1" onClick={() => {
+                    clearCart();
+                    toast.success("Đặt hàng thành công!", {
+                      description: "Đơn hàng của bạn đang chờ xác nhận. Bạn sẽ nhận email xác nhận trong vài phút.",
+                    });
+                  }}>
                     <Button className="w-full transition-all duration-200 hover:scale-[1.02]">
                       Đặt hàng
                     </Button>

@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { rentalCalendar } from "@/lib/mock-data";
+import { toast } from "sonner";
 
 interface DateRangePickerProps {
   dressId: string;
@@ -61,21 +62,83 @@ export default function DateRangePicker({ dressId, onDateChange }: DateRangePick
   };
 
   const handleDateClick = (dateStr: string) => {
-    if (isPast(dateStr) || isBooked(dateStr) || isBuffer(dateStr)) return;
+    if (isPast(dateStr)) {
+      toast.warning("Ngày đã qua", {
+        description: "Không thể chọn ngày trong quá khứ. Vui lòng chọn ngày từ hôm nay trở đi.",
+      });
+      return;
+    }
+    if (isBooked(dateStr)) {
+      const booking = bookedDates.find((b) => {
+        const d = new Date(dateStr);
+        return d >= new Date(b.start) && d <= new Date(b.end);
+      });
+      toast.error("Váy đã được thuê trong ngày này", {
+        description: booking
+          ? `Ngày ${dateStr} nằm trong khoảng ${booking.start} → ${booking.end} đã có khách thuê. Vui lòng chọn ngày khác.`
+          : `Ngày ${dateStr} đã có người thuê. Vui lòng chọn ngày khác.`,
+      });
+      return;
+    }
+    if (isBuffer(dateStr)) {
+      toast.warning("Váy đang được giặt/sấy", {
+        description: `Ngày ${dateStr} là ngày buffer giặt váy sau khi khách trước trả. Váy sẽ sẵn sàng thuê từ ngày tiếp theo.`,
+      });
+      return;
+    }
 
     if (!startDate || (startDate && endDate)) {
       setStartDate(dateStr);
       setEndDate(null);
       onDateChange(dateStr, "");
+      toast.info("Đã chọn ngày nhận", {
+        description: `Ngày nhận: ${dateStr}. Bây giờ hãy chọn ngày trả.`,
+      });
     } else {
-      if (new Date(dateStr) < new Date(startDate)) {
+      // Check if range overlaps with booked dates
+      const start = new Date(startDate);
+      const end = new Date(dateStr);
+      const s = start < end ? start : end;
+      const e = start < end ? end : start;
+
+      let hasConflict = false;
+      let conflictBooking = null;
+      for (const b of bookedDates) {
+        const bStart = new Date(b.start);
+        const bEnd = new Date(b.end);
+        if (s <= bEnd && e >= bStart) {
+          hasConflict = true;
+          conflictBooking = b;
+          break;
+        }
+      }
+
+      if (hasConflict) {
+        toast.error("Khoảng ngày trùng lịch thuê", {
+          description: conflictBooking
+            ? `Khoảng ngày bạn chọn (${startDate} → ${dateStr}) trùng với lịch thuê ${conflictBooking.start} → ${conflictBooking.end}. Vui lòng chọn khoảng ngày khác.`
+            : `Khoảng ngày bạn chọn trùng với lịch thuê khác. Vui lòng chọn lại.`,
+        });
+        return;
+      }
+
+      if (start < end) {
+        setStartDate(startDate);
+        setEndDate(dateStr);
+        onDateChange(startDate, dateStr);
+      } else {
         setStartDate(dateStr);
         setEndDate(startDate);
         onDateChange(dateStr, startDate);
-      } else {
-        setEndDate(dateStr);
-        onDateChange(startDate, dateStr);
       }
+
+      const days = Math.ceil(
+        (new Date(dateStr).getTime() - new Date(startDate).getTime()) /
+          (1000 * 60 * 60 * 24)
+      );
+      toast.success("Đã chọn ngày thuê", {
+        description: `${startDate} → ${dateStr} (${Math.abs(days)} ngày) - Váy còn trống trong khoảng này!`,
+      });
     }
   };
 
@@ -187,6 +250,21 @@ export default function DateRangePicker({ dressId, onDateChange }: DateRangePick
             Buffer giặt
           </div>
         </div>
+
+        {/* Booked dates list */}
+        {bookedDates.length > 0 && (
+          <div className="rounded-lg border border-red-200 bg-red-50/50 p-3 space-y-2">
+            <p className="text-xs font-medium text-red-700">Lịch đã được thuê trong tháng:</p>
+            {bookedDates.map((b, i) => (
+              <div key={i} className="flex items-center gap-2 text-xs text-red-600">
+                <div className="h-1.5 w-1.5 rounded-full bg-red-400" />
+                <span>{b.start} → {b.end}</span>
+                <span className="text-red-400">({Math.ceil((new Date(b.end).getTime() - new Date(b.start).getTime()) / (1000 * 60 * 60 * 24)) + 1} ngày)</span>
+              </div>
+            ))}
+            <p className="text-[10px] text-red-400">Vui lòng chọn ngày nằm ngoài các khoảng trên.</p>
+          </div>
+        )}
 
         {/* Selected range */}
         {startDate && (

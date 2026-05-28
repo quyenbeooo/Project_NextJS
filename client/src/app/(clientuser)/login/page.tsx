@@ -7,14 +7,26 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useAuthStore } from "@/lib/stores/auth-store";
+import { toast } from "sonner";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const login = useAuthStore((s) => s.login);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    login({ id: "U02", name: "Trần Thị B", email: "tranb@gmail.com", role: "user" });
+    if (!email) {
+      toast.warning("Thiếu email", { description: "Vui lòng nhập email." });
+      return;
+    }
+    if (!password) {
+      toast.warning("Thiếu mật khẩu", { description: "Vui lòng nhập mật khẩu." });
+      return;
+    }
+    login({ id: "U02", name: "Trần Thị B", email, role: "user" });
+    toast.success("Đăng nhập thành công", { description: `Chào mừng ${email}!` });
   };
 
   return (
@@ -30,27 +42,23 @@ export default function LoginPage() {
               <label htmlFor="email" className="text-sm font-medium">Email</label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input id="email" type="email" placeholder="you@example.com" className="pl-9 transition-all duration-200 focus:scale-[1.02]" />
+                <Input id="email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-9 transition-all duration-200 focus:scale-[1.02]" />
               </div>
             </div>
             <div className="space-y-1.5 animate-fade-in-up delay-300">
               <div className="flex items-center justify-between">
                 <label htmlFor="password" className="text-sm font-medium">Mật khẩu</label>
-                <Link href="/forgot-password" className="text-xs text-muted-foreground hover:text-foreground">
-                  Quên mật khẩu?
-                </Link>
+                <Link href="/forgot-password" className="text-xs text-muted-foreground hover:text-foreground">Quên mật khẩu?</Link>
               </div>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input id="password" type={showPassword ? "text" : "password"} placeholder="••••••••" className="pl-9 pr-9 transition-all duration-200 focus:scale-[1.02]" />
+                <Input id="password" type={showPassword ? "text" : "password"} placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} className="pl-9 pr-9 transition-all duration-200 focus:scale-[1.02]" />
                 <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
             </div>
-            <Button type="submit" className="w-full transition-all duration-200 hover:scale-[1.02] animate-fade-in-up delay-400">
-              Đăng nhập
-            </Button>
+            <Button type="submit" className="w-full transition-all duration-200 hover:scale-[1.02] animate-fade-in-up delay-400">Đăng nhập</Button>
           </form>
 
           <div className="relative my-6">
@@ -64,8 +72,7 @@ export default function LoginPage() {
           </Button>
 
           <p className="mt-4 text-center text-sm text-muted-foreground animate-fade-in delay-500">
-            Chưa có tài khoản?{" "}
-            <Link href="/register" className="font-medium text-foreground hover:underline">Đăng ký ngay</Link>
+            Chưa có tài khoản? <Link href="/register" className="font-medium text-foreground hover:underline">Đăng ký ngay</Link>
           </p>
         </CardContent>
       </Card>

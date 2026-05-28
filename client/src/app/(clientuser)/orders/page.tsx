@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { orders } from "@/lib/mock-data";
 import type { OrderStatus } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 function formatPrice(n: number) {
   return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(n);
@@ -112,7 +113,7 @@ export default function OrdersPage() {
                       </Link>
                     )}
                     {canCancel && (
-                      <Button variant="destructive" size="sm">
+                      <Button variant="destructive" size="sm" onClick={() => toast.success("Đã hủy đơn hàng", { description: `Đơn ${order.id} đã được hủy.` })}>
                         Hủy đơn
                       </Button>
                     )}
