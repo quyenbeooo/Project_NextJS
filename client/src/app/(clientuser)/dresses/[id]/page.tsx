@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { dresses } from "@/lib/mock-data";
 import ImageGallery from "@/components/dresses/image-gallery";
+import AddToCartButton from "@/components/dresses/add-to-cart-button";
 
 function formatPrice(n: number) {
   return new Intl.NumberFormat("vi-VN", {
@@ -97,6 +98,13 @@ export default async function DressDetailPage({
 
           {/* CTA */}
           <div className="mt-8 space-y-3 animate-fade-in-up delay-400">
+            <AddToCartButton
+              dressId={dress.id}
+              name={dress.name}
+              price={dress.price}
+              size={dress.size[0]}
+              available={dress.available}
+            />
             <div className="flex gap-3">
               <Button size="lg" className="flex-1 transition-all duration-200 hover:scale-105 hover:shadow-lg" disabled={!dress.available}>
                 Thuê ngay

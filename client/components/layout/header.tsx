@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
-import { Menu, X, Search, User, ShoppingBag, ShoppingCart, Package } from "lucide-react";
+import { Menu, X, Search, User, ShoppingBag, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useCartStore } from "@/lib/stores/cart-store";
 
 const navLinks = [
   { href: "/", label: "Trang chủ" },
@@ -16,6 +17,7 @@ const navLinks = [
 export default function Header() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const totalItems = useCartStore((s) => s.totalItems());
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -53,9 +55,11 @@ export default function Header() {
           <Link href="/cart">
             <Button variant="ghost" size="icon-sm" className="relative transition-all duration-200 hover:scale-105">
               <ShoppingCart />
-              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-foreground text-[10px] font-bold text-background">
-                2
-              </span>
+              {totalItems > 0 && (
+                <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-foreground text-[10px] font-bold text-background animate-scale-in">
+                  {totalItems}
+                </span>
+              )}
             </Button>
           </Link>
           <Link href="/login">
@@ -115,7 +119,7 @@ export default function Header() {
           <Link href="/cart" onClick={() => setOpen(false)}>
             <Button variant="outline" className="w-full transition-all duration-200 hover:scale-[1.02]" size="sm">
               <ShoppingCart className="mr-2 h-4 w-4" />
-              Giỏ hàng (2)
+              Giỏ hàng {totalItems > 0 && `(${totalItems})`}
             </Button>
           </Link>
           <Link href="/login" onClick={() => setOpen(false)}>

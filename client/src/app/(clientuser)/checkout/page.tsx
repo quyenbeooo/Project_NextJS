@@ -6,8 +6,7 @@ import { ArrowLeft, CreditCard, Truck, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { mockCart } from "@/lib/mock-data";
+import { useCartStore } from "@/lib/stores/cart-store";
 
 function formatPrice(n: number) {
   return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(n);
@@ -15,9 +14,8 @@ function formatPrice(n: number) {
 
 export default function CheckoutPage() {
   const [step, setStep] = useState(1);
-  const items = mockCart;
-  const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const deposit = Math.round(subtotal * 0.5);
+  const { items, subtotal, clearCart } = useCartStore();
+  const deposit = Math.round(subtotal() * 0.5);
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 page-enter">
@@ -158,8 +156,8 @@ export default function CheckoutPage() {
 
                 <div className="rounded-lg border border-border p-4 space-y-2">
                   {items.map((item) => (
-                    <div key={item.dressId} className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">{item.name} x{item.quantity}</span>
+                    <div key={`${item.dressId}-${item.size}`} className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">{item.name} (Size {item.size}) x{item.quantity}</span>
                       <span>{formatPrice(item.price * item.quantity)}</span>
                     </div>
                   ))}
@@ -169,7 +167,7 @@ export default function CheckoutPage() {
                   <Button variant="outline" onClick={() => setStep(2)} className="flex-1">
                     Quay lại
                   </Button>
-                  <Link href="/orders" className="flex-1">
+                  <Link href="/orders" className="flex-1" onClick={() => clearCart()}>
                     <Button className="w-full transition-all duration-200 hover:scale-[1.02]">
                       Đặt hàng
                     </Button>
@@ -188,7 +186,7 @@ export default function CheckoutPage() {
             </CardHeader>
             <CardContent className="space-y-3">
               {items.map((item) => (
-                <div key={item.dressId} className="flex gap-3">
+                <div key={`${item.dressId}-${item.size}`} className="flex gap-3">
                   <div className="h-14 w-12 flex-shrink-0 rounded bg-muted flex items-center justify-center text-[10px] text-muted-foreground">
                     Ảnh
                   </div>
@@ -202,7 +200,7 @@ export default function CheckoutPage() {
               <div className="border-t border-border pt-3 space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Tạm tính</span>
-                  <span>{formatPrice(subtotal)}</span>
+                  <span>{formatPrice(subtotal())}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Đặt cọc</span>
@@ -210,7 +208,7 @@ export default function CheckoutPage() {
                 </div>
                 <div className="flex justify-between font-bold">
                   <span>Tổng thanh toán</span>
-                  <span>{formatPrice(subtotal)}</span>
+                  <span>{formatPrice(subtotal())}</span>
                 </div>
               </div>
             </CardContent>
