@@ -1,5 +1,6 @@
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
+import SocialBar from "@/components/layout/social-bar";
 
 export default function ClientLayout({
   children,
@@ -11,6 +12,7 @@ export default function ClientLayout({
       <Header />
       <main className="flex-1">{children}</main>
       <Footer />
+      <SocialBar />
     </div>
   );
 }
