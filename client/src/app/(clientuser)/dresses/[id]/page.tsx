@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { dresses } from "@/lib/mock-data";
+import ImageGallery from "@/components/dresses/image-gallery";
 
 function formatPrice(n: number) {
   return new Intl.NumberFormat("vi-VN", {
@@ -37,17 +38,8 @@ export default async function DressDetailPage({
       </Link>
 
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
-        {/* Image */}
-        <div className="relative aspect-[3/4] overflow-hidden rounded-xl border border-border bg-muted">
-          <div className="flex h-full items-center justify-center text-muted-foreground">
-            Ảnh váy
-          </div>
-          {!dress.available && (
-            <div className="absolute inset-0 flex items-center justify-center bg-background/60">
-              <Badge variant="secondary">Đã được thuê</Badge>
-            </div>
-          )}
-        </div>
+        {/* Image Gallery */}
+        <ImageGallery images={dress.images} available={dress.available} />
 
         {/* Info */}
         <div className="flex flex-col">

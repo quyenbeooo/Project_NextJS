@@ -1,3 +1,9 @@
+export interface DressImage {
+  id: string;
+  color: string;
+  label: string;
+}
+
 export interface Dress {
   id: string;
   name: string;
@@ -8,6 +14,7 @@ export interface Dress {
   color: string;
   category: string;
   available: boolean;
+  images: DressImage[];
 }
 
 export const categories = [
@@ -33,6 +40,12 @@ export const dresses: Dress[] = [
     color: "Hồng pastel",
     category: "Váy cưới",
     available: true,
+    images: [
+      { id: "1a", color: "#f9a8d4", label: "Ảnh chính" },
+      { id: "1b", color: "#f472b6", label: "Ảnh sau" },
+      { id: "1c", color: "#ec4899", label: "Ảnh chi tiết" },
+      { id: "1d", color: "#db2777", label: "Ảnh mặc" },
+    ],
   },
   {
     id: "2",
@@ -45,18 +58,29 @@ export const dresses: Dress[] = [
     color: "Đỏ rượu",
     category: "Váy dạ hội",
     available: true,
+    images: [
+      { id: "2a", color: "#991b1b", label: "Ảnh chính" },
+      { id: "2b", color: "#b91c1c", label: "Ảnh sau" },
+      { id: "2c", color: "#dc2626", label: "Ảnh chi tiết" },
+      { id: "2d", color: "#ef4444", label: "Ảnh mặc" },
+    ],
   },
   {
     id: "3",
     name: "Váy Ngọt Ngào Mùa Xuân",
     description:
-      "Váy dự tiệc nữ tính với họa tiết hoa nhí,_length dài bắp chân, phù hợp nhiều dịp.",
+      "Váy dự tiệc nữ tính với họa tiết hoa nhí, dài bắp chân, phù hợp nhiều dịp.",
     price: 280000,
     deposit: 400000,
     size: ["S", "M", "L", "XL"],
     color: "Trắng kem",
     category: "Váy dự tiệc",
     available: true,
+    images: [
+      { id: "3a", color: "#fef3c7", label: "Ảnh chính" },
+      { id: "3b", color: "#fde68a", label: "Ảnh sau" },
+      { id: "3c", color: "#fcd34d", label: "Ảnh chi tiết" },
+    ],
   },
   {
     id: "4",
@@ -69,6 +93,11 @@ export const dresses: Dress[] = [
     color: "Xanh navy",
     category: "Váy công sở",
     available: true,
+    images: [
+      { id: "4a", color: "#1e3a5f", label: "Ảnh chính" },
+      { id: "4b", color: "#1e40af", label: "Ảnh sau" },
+      { id: "4c", color: "#2563eb", label: "Ảnh chi tiết" },
+    ],
   },
   {
     id: "5",
@@ -81,6 +110,11 @@ export const dresses: Dress[] = [
     color: "Be",
     category: "Váy dạo phố",
     available: false,
+    images: [
+      { id: "5a", color: "#d6d3d1", label: "Ảnh chính" },
+      { id: "5b", color: "#a8a29e", label: "Ảnh sau" },
+      { id: "5c", color: "#78716c", label: "Ảnh chi tiết" },
+    ],
   },
   {
     id: "6",
@@ -93,6 +127,12 @@ export const dresses: Dress[] = [
     color: "Xanh rêu",
     category: "Váy dạ hội",
     available: true,
+    images: [
+      { id: "6a", color: "#365314", label: "Ảnh chính" },
+      { id: "6b", color: "#4d7c0f", label: "Ảnh sau" },
+      { id: "6c", color: "#65a30d", label: "Ảnh chi tiết" },
+      { id: "6d", color: "#84cc16", label: "Ảnh mặc" },
+    ],
   },
 ];
 
