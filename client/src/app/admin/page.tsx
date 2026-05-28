@@ -45,8 +45,10 @@ const stats = [
 const statusMap: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
   pending: { label: "Chờ xử lý", variant: "secondary" },
   confirmed: { label: "Đã xác nhận", variant: "default" },
-  delivered: { label: "Đã giao", variant: "outline" },
-  returned: { label: "Đã trả", variant: "outline" },
+  shipping: { label: "Đang giao", variant: "outline" },
+  renting: { label: "Đang thuê", variant: "default" },
+  returned: { label: "Đã trả", variant: "secondary" },
+  completed: { label: "Hoàn tất", variant: "outline" },
   cancelled: { label: "Đã hủy", variant: "destructive" },
 };
 

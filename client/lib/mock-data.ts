@@ -138,14 +138,38 @@ export const dresses: Dress[] = [
 
 // --- Admin mock data ---
 
+export interface CartItem {
+  dressId: string;
+  name: string;
+  price: number;
+  size: string;
+  quantity: number;
+  imageUrl?: string;
+}
+
+export type OrderStatus =
+  | "pending"
+  | "confirmed"
+  | "shipping"
+  | "renting"
+  | "returned"
+  | "completed"
+  | "cancelled";
+
 export interface Order {
   id: string;
   customerName: string;
   dressName: string;
+  dressId: string;
+  size: string;
   startDate: string;
   endDate: string;
   totalPrice: number;
-  status: "pending" | "confirmed" | "delivered" | "returned" | "cancelled";
+  deposit: number;
+  status: OrderStatus;
+  createdAt: string;
+  timeline: { status: string; date: string; note: string }[];
+  review?: { rating: number; comment: string; date: string };
 }
 
 export interface User {
@@ -157,51 +181,102 @@ export interface User {
   createdAt: string;
 }
 
+export const mockCart: CartItem[] = [
+  { dressId: "1", name: "Váy Cầu Vồng Pastel", price: 350000, size: "M", quantity: 1 },
+  { dressId: "3", name: "Váy Ngọt Ngào Mùa Xuân", price: 280000, size: "S", quantity: 2 },
+];
+
 export const orders: Order[] = [
   {
     id: "ORD-001",
     customerName: "Trần Thị B",
     dressName: "Váy Cầu Vồng Pastel",
+    dressId: "1",
+    size: "M",
     startDate: "2026-06-01",
     endDate: "2026-06-03",
     totalPrice: 700000,
-    status: "confirmed",
+    deposit: 500000,
+    status: "renting",
+    createdAt: "2026-05-25",
+    timeline: [
+      { status: "pending", date: "2026-05-25 10:00", note: "Đơn hàng được tạo" },
+      { status: "confirmed", date: "2026-05-25 14:30", note: "Shop xác nhận đơn" },
+      { status: "shipping", date: "2026-05-30 09:00", note: "Đang giao hàng" },
+      { status: "renting", date: "2026-06-01 08:00", note: "Khách đã nhận váy" },
+    ],
   },
   {
     id: "ORD-002",
     customerName: "Lê Văn C",
     dressName: "Váy Đêm Hoàng Hôn",
+    dressId: "2",
+    size: "S",
     startDate: "2026-06-05",
     endDate: "2026-06-06",
     totalPrice: 500000,
+    deposit: 800000,
     status: "pending",
+    createdAt: "2026-05-28",
+    timeline: [
+      { status: "pending", date: "2026-05-28 16:00", note: "Đơn hàng chờ xử lý" },
+    ],
   },
   {
     id: "ORD-003",
     customerName: "Phạm Minh D",
     dressName: "Váy Lụa Sang Trọng",
+    dressId: "6",
+    size: "M",
     startDate: "2026-05-20",
     endDate: "2026-05-22",
     totalPrice: 1200000,
-    status: "returned",
+    deposit: 1000000,
+    status: "completed",
+    createdAt: "2026-05-15",
+    timeline: [
+      { status: "pending", date: "2026-05-15 08:00", note: "Đơn hàng được tạo" },
+      { status: "confirmed", date: "2026-05-15 10:00", note: "Shop xác nhận" },
+      { status: "shipping", date: "2026-05-18 14:00", note: "Đang giao" },
+      { status: "renting", date: "2026-05-20 09:00", note: "Khách nhận váy" },
+      { status: "returned", date: "2026-05-22 16:00", note: "Khách trả váy" },
+      { status: "completed", date: "2026-05-22 17:00", note: "Hoàn tất" },
+    ],
+    review: { rating: 5, comment: "Váy rất đẹp, chất lượng tốt!", date: "2026-05-23" },
   },
   {
     id: "ORD-004",
     customerName: "Nguyễn Thị E",
     dressName: "Váy Công Sở Thanh Lịch",
+    dressId: "4",
+    size: "L",
     startDate: "2026-06-10",
     endDate: "2026-06-12",
     totalPrice: 400000,
-    status: "pending",
+    deposit: 300000,
+    status: "confirmed",
+    createdAt: "2026-05-27",
+    timeline: [
+      { status: "pending", date: "2026-05-27 11:00", note: "Đơn hàng được tạo" },
+      { status: "confirmed", date: "2026-05-27 15:00", note: "Shop xác nhận" },
+    ],
   },
   {
     id: "ORD-005",
     customerName: "Hoàng Văn F",
     dressName: "Váy Ngọt Ngào Mùa Xuân",
+    dressId: "3",
+    size: "M",
     startDate: "2026-05-15",
     endDate: "2026-05-16",
     totalPrice: 280000,
-    status: "delivered",
+    deposit: 400000,
+    status: "cancelled",
+    createdAt: "2026-05-10",
+    timeline: [
+      { status: "pending", date: "2026-05-10 09:00", note: "Đơn hàng được tạo" },
+      { status: "cancelled", date: "2026-05-11 10:00", note: "Khách hủy đơn" },
+    ],
   },
 ];
 

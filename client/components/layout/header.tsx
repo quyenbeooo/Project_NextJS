@@ -3,13 +3,14 @@
 import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
-import { Menu, X, Search, User, ShoppingBag } from "lucide-react";
+import { Menu, X, Search, User, ShoppingBag, ShoppingCart, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
   { href: "/", label: "Trang chủ" },
   { href: "/dresses", label: "Thuê váy" },
+  { href: "/orders", label: "Đơn thuê" },
 ];
 
 export default function Header() {
@@ -49,6 +50,14 @@ export default function Header() {
           <Button variant="ghost" size="icon-sm" className="transition-all duration-200 hover:scale-105">
             <Search />
           </Button>
+          <Link href="/cart">
+            <Button variant="ghost" size="icon-sm" className="relative transition-all duration-200 hover:scale-105">
+              <ShoppingCart />
+              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-foreground text-[10px] font-bold text-background">
+                2
+              </span>
+            </Button>
+          </Link>
           <Link href="/login">
             <Button variant="outline" size="sm" className="transition-all duration-200 hover:scale-105">
               <User />
@@ -103,8 +112,14 @@ export default function Header() {
             );
           })}
           <div className="my-2 border-t border-border" />
-          <Link href="/login" onClick={() => setOpen(false)}>
+          <Link href="/cart" onClick={() => setOpen(false)}>
             <Button variant="outline" className="w-full transition-all duration-200 hover:scale-[1.02]" size="sm">
+              <ShoppingCart className="mr-2 h-4 w-4" />
+              Giỏ hàng (2)
+            </Button>
+          </Link>
+          <Link href="/login" onClick={() => setOpen(false)}>
+            <Button variant="outline" className="w-full transition-all duration-200 hover:scale-[1.02] mt-1" size="sm">
               Đăng nhập
             </Button>
           </Link>
