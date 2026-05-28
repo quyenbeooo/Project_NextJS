@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Check } from "lucide-react";
+import { ArrowLeft, Check, Ruler } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -96,13 +96,21 @@ export default async function DressDetailPage({
           </div>
 
           {/* CTA */}
-          <div className="mt-8 flex gap-3 animate-fade-in-up delay-400">
-            <Button size="lg" className="flex-1 transition-all duration-200 hover:scale-105 hover:shadow-lg" disabled={!dress.available}>
-              Thuê ngay
-            </Button>
-            <Button size="lg" variant="outline" className="transition-all duration-200 hover:scale-105">
-              Liên hệ tư vấn
-            </Button>
+          <div className="mt-8 space-y-3 animate-fade-in-up delay-400">
+            <div className="flex gap-3">
+              <Button size="lg" className="flex-1 transition-all duration-200 hover:scale-105 hover:shadow-lg" disabled={!dress.available}>
+                Thuê ngay
+              </Button>
+              <Button size="lg" variant="outline" className="transition-all duration-200 hover:scale-105">
+                Liên hệ tư vấn
+              </Button>
+            </div>
+            <Link href={`/dresses/${dress.id}/try-on`}>
+              <Button size="lg" variant="secondary" className="w-full transition-all duration-200 hover:scale-[1.02] hover:shadow-md">
+                <Ruler className="mr-2 h-4 w-4" />
+                Thử váy — Xem size vừa
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
